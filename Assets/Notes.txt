@@ -1,0 +1,4 @@
+Notes for development:
+
+- Creational pattern chosen: Builder --> https://refactoring.guru/design-patterns/builder
+- https://refactoring.guru/design-patterns/visitor
