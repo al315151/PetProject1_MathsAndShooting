@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2102785260611759025}
   - component: {fileID: 6839941802029806965}
   - component: {fileID: 4311037491882256490}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: InteractionCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 284ad7a73cd21d547a75a6620d765ff0, type: 2}
+  - {fileID: 2100000, guid: cfcd9ef947bc812489fd5bac27c48591, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

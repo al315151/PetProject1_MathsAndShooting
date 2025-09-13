@@ -9,6 +9,9 @@ public class InputManager : IInitializable, IDisposable, ITickable
 
     private readonly CameraProvider cameraProvider;
 
+    public Action<Vector3> OnPlayerInputReceived;
+
+
     public InputManager(CameraProvider cameraProvider)
     {
         this.cameraProvider = cameraProvider;
@@ -39,7 +42,7 @@ public class InputManager : IInitializable, IDisposable, ITickable
         var currentCamera = cameraProvider.MainCamera;
 
         // On mouse button being pressed, 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButton(0))
         {
             GetWorldPositionFromScreenPosition(Input.mousePosition);
             
@@ -68,6 +71,7 @@ public class InputManager : IInitializable, IDisposable, ITickable
             for (var i = 0; i < numberOfHits; i++)
             {
                 Debug.Log($"Position obtained by raycast: {raycastResults[i].point}");
+                OnPlayerInputReceived?.Invoke(raycastResults[i].point);
             }
         }
 

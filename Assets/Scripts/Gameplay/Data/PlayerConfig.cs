@@ -8,6 +8,6 @@ public class PlayerConfig : IPlayerConfig
 
     public PlayerConfig()
     {
-        PlayerSpeed = 15;
+        PlayerSpeed = 5;
     }
 }
