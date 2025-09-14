@@ -11,13 +11,21 @@ public class ApplicationLifetimeScope : LifetimeScope
     [SerializeField]
     private PlayerView playerView;
 
+    [SerializeField]
+    private GameObjectPool gameObjectPool;
+
     protected override void Configure(IContainerBuilder builder)
     {
         builder.Register<PlayerConfig>(Lifetime.Scoped).As<IPlayerConfig>();
         builder.Register<PlayerController>(Lifetime.Scoped).As<IInitializable, IDisposable>();
         builder.Register<InputManager>(Lifetime.Scoped).As<IInitializable, IDisposable, ITickable, InputManager>();
+
+        builder.Register<EnemyBuilder>(Lifetime.Scoped).AsSelf();
+
         builder.RegisterInstance(cameraProvider);
         builder.RegisterInstance(playerView);
+        builder.RegisterInstance(gameObjectPool).As<IGameObjectPool>();
 
+        builder.Register<EntityDirector>(Lifetime.Scoped).As<IInitializable, IDisposable>();
     }
 }

@@ -32,11 +32,11 @@ public class InputManager : IInitializable, IDisposable, ITickable
         OnEachFrame().Forget();
     }
 
-    private async UniTask OnEachFrame()
+    private UniTask OnEachFrame()
     {
         if (cameraProvider.MainCamera == null)
         {
-            return;
+            return UniTask.CompletedTask;
         }
 
         var currentCamera = cameraProvider.MainCamera;
@@ -45,8 +45,9 @@ public class InputManager : IInitializable, IDisposable, ITickable
         if (Input.GetMouseButton(0))
         {
             GetWorldPositionFromScreenPosition(Input.mousePosition);
-            
         }
+
+        return UniTask.CompletedTask;
     }
 
     private void GetWorldPositionFromScreenPosition(Vector3 screenPosition)
