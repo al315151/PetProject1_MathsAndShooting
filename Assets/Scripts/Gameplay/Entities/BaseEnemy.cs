@@ -29,6 +29,10 @@ public class BaseEnemy : Entity
         }
     }
 
+    public void SetupEnemyPosition(Vector3 position)
+    {
+        gameObjectReference.transform.position = position;
+    }
 
     // Setup the enemy components from the builder, and arrange logic as intended.
     public GameObject GetGameObject()

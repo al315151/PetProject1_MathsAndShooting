@@ -28,11 +28,12 @@ public class EntityDirector : IInitializable, IDisposable
         CreateBasicEnemy();
     }
 
-    public void CreateBasicEnemy()
+    public BaseEnemy CreateBasicEnemy()
     {
         entityBuilder = enemyBuilder;
         
         entityBuilder.Build();
         var enemy = entityBuilder.GetResult();
+        return (BaseEnemy)enemy;
     }
 }
