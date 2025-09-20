@@ -8,15 +8,18 @@ public class EnemyBuilder : IEntityBuilder
     private readonly IGameObjectPool gameObjectPool;
     private readonly EnemySpawnPositionProvider enemySpawnPositionProvider;
     private readonly MovementVisitor movementVisitor;
+    private readonly GameOverVisitor gameOverVisitor;
 
     public EnemyBuilder(
         IGameObjectPool gameObjectPool,
         EnemySpawnPositionProvider enemySpawnPositionProvider,
-        MovementVisitor movementVisitor)
+        MovementVisitor movementVisitor,
+        GameOverVisitor gameOverVisitor)
     {
         this.gameObjectPool = gameObjectPool;
         this.enemySpawnPositionProvider = enemySpawnPositionProvider;
         this.movementVisitor = movementVisitor;
+        this.gameOverVisitor = gameOverVisitor;
     }
 
 
@@ -47,7 +50,7 @@ public class EnemyBuilder : IEntityBuilder
         baseEnemy = null;
     }
 
-    public void BuildEntityView(EntityView baseEnemyView)
+    public void BuildEntityView(EntityView entityView)
     {
         if (baseEnemy == null)
         {
@@ -58,9 +61,14 @@ public class EnemyBuilder : IEntityBuilder
         // Setup object position.
         var graphicsPosition = enemySpawnPositionProvider.GetEnemySpawnPosition();
 
+        var baseEnemyView = entityView as BaseEnemyView;
+
         baseEnemyView.SetViewPosition(graphicsPosition);
+        baseEnemyView.AcceptVisitor(gameOverVisitor);
         
         baseEnemy.AddComponentToEntity(baseEnemyView);
+
+        
     }
 
     public void BuildMovementBehaviour(EntityView entityView)

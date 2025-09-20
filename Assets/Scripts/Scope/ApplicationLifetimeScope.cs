@@ -17,6 +17,9 @@ public class ApplicationLifetimeScope : LifetimeScope
     [SerializeField]
     private EnemySpawnPositionProvider enemySpawnPositionProvider;
 
+    [SerializeField]
+    private EndGameBoundsSolver endGameBoundsProvider;
+
     protected override void Configure(IContainerBuilder builder)
     {
         builder.Register<PlayerConfig>(Lifetime.Scoped).As<IPlayerConfig>();
@@ -29,9 +32,11 @@ public class ApplicationLifetimeScope : LifetimeScope
         builder.RegisterInstance(playerView);
         builder.RegisterInstance(gameObjectPool).As<IGameObjectPool>();
         builder.RegisterInstance(enemySpawnPositionProvider).As<EnemySpawnPositionProvider>();
+        builder.RegisterInstance(endGameBoundsProvider).As<EndGameBoundsSolver>();
 
         builder.Register<EntityDirector>(Lifetime.Scoped).As<IInitializable, IDisposable, EntityDirector>();
         builder.Register<MovementVisitor>(Lifetime.Scoped).As<IInitializable, IDisposable, MovementVisitor>();
+        builder.Register<GameOverVisitor>(Lifetime.Scoped).As<IInitializable, IDisposable, GameOverVisitor>();
 
         builder.Register<GameManager>(Lifetime.Scoped).As<IInitializable, IDisposable>();
     }

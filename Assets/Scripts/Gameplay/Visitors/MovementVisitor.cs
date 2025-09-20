@@ -25,6 +25,11 @@ public class MovementVisitor : IInitializable, IDisposable
 
     public void EnableEntityMovement()
     {
+        if (IsEntityMovementEnabled)
+        {
+            DisableEntityMovement();
+        }
+
         cancellationTokenSource = new CancellationTokenSource();
         IsEntityMovementEnabled = true;
         UpdatePositionOnEntities().AttachExternalCancellation(cancellationTokenSource.Token);

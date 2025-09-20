@@ -156,3 +156,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EnemyGraphicsPrefab: {fileID: 343775165123757686}
+  enemyGraphicsBoundsCollider: {fileID: 1767724283438952319}
