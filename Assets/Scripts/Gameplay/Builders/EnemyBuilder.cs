@@ -6,10 +6,14 @@ public class EnemyBuilder : IEntityBuilder
 
     private BaseEnemy baseEnemy;
     private readonly IGameObjectPool gameObjectPool;
+    private readonly EnemySpawnPositionProvider enemySpawnPositionProvider;
 
-    public EnemyBuilder(IGameObjectPool gameObjectPool)
+    public EnemyBuilder(
+        IGameObjectPool gameObjectPool,
+        EnemySpawnPositionProvider enemySpawnPositionProvider)
     {
         this.gameObjectPool = gameObjectPool;
+        this.enemySpawnPositionProvider = enemySpawnPositionProvider;
     }
 
 
@@ -17,12 +21,11 @@ public class EnemyBuilder : IEntityBuilder
     {
         await UniTask.WaitUntil(() => gameObjectPool.IsInitialized);
 
-        var newObject = gameObjectPool.GetGameObjectFromPool();
-        newObject.name = "BaseEnemy";
+        var newObjectEnemyView = gameObjectPool.GetBaseEnemyViewFromPool();
 
-        baseEnemy = new BaseEnemy(newObject);
+        baseEnemy = new BaseEnemy(newObjectEnemyView.gameObject);
 
-        BuildEntityView(baseEnemy);
+        BuildEntityView(newObjectEnemyView);
     }
 
     public Entity GetResult()
@@ -40,7 +43,7 @@ public class EnemyBuilder : IEntityBuilder
         baseEnemy = null;
     }
 
-    public void BuildEntityView(BaseEnemy baseEnemy)
+    public void BuildEntityView(EntityView baseEnemyView)
     {
         if (baseEnemy == null)
         {
@@ -48,7 +51,11 @@ public class EnemyBuilder : IEntityBuilder
             return;
         }
 
-        var entityView = baseEnemy.GetGameObject().AddComponent<EntityView>();
-        baseEnemy.AddComponentToEntity(entityView);
+        // Setup object position.
+        var graphicsPosition = enemySpawnPositionProvider.GetEnemySpawnPosition();
+
+        baseEnemyView.SetViewPosition(graphicsPosition);
+        
+        baseEnemy.AddComponentToEntity(baseEnemyView);
     }
 }

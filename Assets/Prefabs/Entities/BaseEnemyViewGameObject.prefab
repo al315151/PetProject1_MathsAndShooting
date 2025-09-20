@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 282881788993050693}
   - component: {fileID: 1767724283438952319}
   m_Layer: 0
-  m_Name: Cylinder
+  m_Name: EnemyMeshCylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -119,8 +119,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2948215539227398297}
+  - component: {fileID: 5772186662880753619}
   m_Layer: 0
-  m_Name: EnemyGraphics
+  m_Name: BaseEnemyViewGameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -142,3 +143,16 @@ Transform:
   - {fileID: 1048568525988983188}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5772186662880753619
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 915646256309114998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f60de26f11b8bce47a2dafdbbc802486, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EnemyGraphicsPrefab: {fileID: 343775165123757686}

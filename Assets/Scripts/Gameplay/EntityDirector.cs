@@ -1,4 +1,5 @@
 using System;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -25,7 +26,19 @@ public class EntityDirector : IInitializable, IDisposable
 
     public void Initialize()
     {
-        CreateBasicEnemy();
+        SpawnEnemies().Forget();
+    }
+
+    private async UniTask SpawnEnemies()
+    {
+        await UniTask.Delay(5000);
+
+        for (int i = 0; i < 10; i++)
+        {
+            CreateBasicEnemy();
+
+            await UniTask.Delay(1000);
+        }
     }
 
     public BaseEnemy CreateBasicEnemy()

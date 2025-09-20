@@ -3,11 +3,16 @@ using UnityEngine;
 
 public class GameObjectPool : MonoBehaviour, IGameObjectPool
 {
-    private const int GameObjectPoolCount = 200;
+    private const int GameObjectPoolCount = 50;
+
+    [SerializeField]
+    private GameObject basicEnemyReference;
 
     public bool IsInitialized => poolInitialized;
 
     private List<GameObject> gameObjectPool;
+
+    private List<BaseEnemyView> baseEnemyViewPool;
 
     private bool poolInitialized;
 
@@ -20,7 +25,25 @@ public class GameObjectPool : MonoBehaviour, IGameObjectPool
                 continue;
             }
             var go = gameObjectPool[i];
+            go.SetActive(true);
             gameObjectPool.Remove(go);
+            return go;
+        }
+
+        return null;
+    }
+
+    public BaseEnemyView GetBaseEnemyViewFromPool()
+    {
+        for(int i = 0; i < baseEnemyViewPool.Count; i++)
+        {
+            if (baseEnemyViewPool[i] == null)
+            {
+                continue;
+            }
+            var go = baseEnemyViewPool[i];
+            go.gameObject.SetActive(true);
+            baseEnemyViewPool.Remove(go);
             return go;
         }
 
@@ -43,13 +66,41 @@ public class GameObjectPool : MonoBehaviour, IGameObjectPool
             var newGameObject = new GameObject();
             newGameObject.transform.parent = transform;
             newGameObject.name = "newObject_" + i;
+            newGameObject.SetActive(false);
 
             gameObjectPool.Add(newGameObject);
         }
+
+        baseEnemyViewPool = new List<BaseEnemyView>();
+        for (int i = 0;i < GameObjectPoolCount; i++)
+        {
+            var newBaseEnemyView = Instantiate(basicEnemyReference, transform);
+            newBaseEnemyView.name = newBaseEnemyView.name + "_" + i;
+            newBaseEnemyView.SetActive(false);
+
+            baseEnemyViewPool.Add(newBaseEnemyView.GetComponent<BaseEnemyView>());
+        }
+
     }
 
     public void ReturnObjectToPool(GameObject objectToReturn)
     {
-        gameObjectPool.Add(objectToReturn);
+        if (objectToReturn == null)
+        {
+            return;
+        }
+
+        var isObjectEnemyView = objectToReturn.TryGetComponent<BaseEnemyView>(out var baseEnemyView);
+
+        if (isObjectEnemyView)
+        {
+            baseEnemyViewPool.Add(baseEnemyView);
+        }
+        else
+        {
+            gameObjectPool.Add(objectToReturn);
+        }
+            
+        objectToReturn.SetActive(false);
     }
 }
