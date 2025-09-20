@@ -32,11 +32,11 @@ public class InputManager : IInitializable, IDisposable, ITickable
         OnEachFrame().Forget();
     }
 
-    private async UniTask OnEachFrame()
+    private UniTask OnEachFrame()
     {
         if (cameraProvider.MainCamera == null)
         {
-            return;
+            return UniTask.CompletedTask;
         }
 
         var currentCamera = cameraProvider.MainCamera;
@@ -45,8 +45,9 @@ public class InputManager : IInitializable, IDisposable, ITickable
         if (Input.GetMouseButton(0))
         {
             GetWorldPositionFromScreenPosition(Input.mousePosition);
-            
         }
+
+        return UniTask.CompletedTask;
     }
 
     private void GetWorldPositionFromScreenPosition(Vector3 screenPosition)
@@ -59,8 +60,8 @@ public class InputManager : IInitializable, IDisposable, ITickable
 
         var direction = worldPosition - originPosition;
 
-        Debug.Log($"Input mouse position in pixels: {screenPosition}");
-        Debug.Log($"Input mouse position in world coordinates: {worldPosition}");
+        //Debug.Log($"Input mouse position in pixels: {screenPosition}");
+        //Debug.Log($"Input mouse position in world coordinates: {worldPosition}");
 
         var raycastResults = new RaycastHit[5];
         var numberOfHits = Physics.RaycastNonAlloc(new Ray(originPosition, direction), raycastResults, 20.0f, interactionLayer);
@@ -70,7 +71,7 @@ public class InputManager : IInitializable, IDisposable, ITickable
         {
             for (var i = 0; i < numberOfHits; i++)
             {
-                Debug.Log($"Position obtained by raycast: {raycastResults[i].point}");
+                //Debug.Log($"Position obtained by raycast: {raycastResults[i].point}");
                 OnPlayerInputReceived?.Invoke(raycastResults[i].point);
             }
         }

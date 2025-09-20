@@ -10,6 +10,8 @@ public class PlayerController : IInitializable, IDisposable
     private readonly PlayerView playerView;
     private readonly InputManager inputManager;
 
+    private bool InputEnabled = true;
+
     public PlayerController(
         IPlayerConfig playerConfig,
         PlayerView playerView,
@@ -31,6 +33,17 @@ public class PlayerController : IInitializable, IDisposable
         Unsubscribe();
     }
 
+    public void EnablePlayerInput()
+    {
+        InputEnabled = true;
+    }
+
+    public void DisablePlayerInput()
+    {
+        InputEnabled = false;
+    }
+
+
     private void Subscribe()
     {
         inputManager.OnPlayerInputReceived += OnPlayerInputReceived;
@@ -43,6 +56,11 @@ public class PlayerController : IInitializable, IDisposable
     
     private void OnPlayerInputReceived(Vector3 inputPosition)
     {
+        if (InputEnabled == false)
+        {
+            return;
+        }
+
         var currentPlayerPosOnXAxis = playerView.transform.position.x;
         var inputDistance = inputPosition.x - currentPlayerPosOnXAxis;
         if (Mathf.Abs(inputDistance) < inputThreshold)
