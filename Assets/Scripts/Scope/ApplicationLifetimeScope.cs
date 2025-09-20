@@ -20,10 +20,13 @@ public class ApplicationLifetimeScope : LifetimeScope
     [SerializeField]
     private EndGameBoundsSolver endGameBoundsProvider;
 
+    [SerializeField]
+    private GameOverPopup gameOverPopup;
+
     protected override void Configure(IContainerBuilder builder)
     {
         builder.Register<PlayerConfig>(Lifetime.Scoped).As<IPlayerConfig>();
-        builder.Register<PlayerController>(Lifetime.Scoped).As<IInitializable, IDisposable>();
+        builder.Register<PlayerController>(Lifetime.Scoped).As<IInitializable, IDisposable, PlayerController>();
         builder.Register<InputManager>(Lifetime.Scoped).As<IInitializable, IDisposable, ITickable, InputManager>();
 
         builder.Register<EnemyBuilder>(Lifetime.Scoped).AsSelf();
@@ -33,6 +36,7 @@ public class ApplicationLifetimeScope : LifetimeScope
         builder.RegisterInstance(gameObjectPool).As<IGameObjectPool>();
         builder.RegisterInstance(enemySpawnPositionProvider).As<EnemySpawnPositionProvider>();
         builder.RegisterInstance(endGameBoundsProvider).As<EndGameBoundsSolver>();
+        builder.RegisterInstance(gameOverPopup).AsSelf();
 
         builder.Register<EntityDirector>(Lifetime.Scoped).As<IInitializable, IDisposable, EntityDirector>();
         builder.Register<MovementVisitor>(Lifetime.Scoped).As<IInitializable, IDisposable, MovementVisitor>();

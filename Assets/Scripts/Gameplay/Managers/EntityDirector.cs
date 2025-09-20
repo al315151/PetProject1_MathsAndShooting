@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using NUnit.Framework;
-using UnityEngine;
 using VContainer.Unity;
 
 public class EntityDirector : IInitializable, IDisposable
@@ -38,19 +36,30 @@ public class EntityDirector : IInitializable, IDisposable
 
         for (int i = 0; i < 10; i++)
         {
-            var baseEnemy = CreateBasicEnemy();
+            var baseEnemy = await CreateBasicEnemy();
             baseEnemies.Add(baseEnemy);
 
             await UniTask.Delay(1000);
         }
     }
 
-    public BaseEnemyController CreateBasicEnemy()
+    public async UniTask<BaseEnemyController> CreateBasicEnemy()
     {
         entityBuilder = enemyBuilder;
         
-        entityBuilder.Build();
+        await entityBuilder.Build();
         var enemy = entityBuilder.GetResult();
         return (BaseEnemyController)enemy;
     }
+
+    public void Cleanup()
+    {
+        foreach (var enemy in baseEnemies)
+        {
+            enemy.ComponentCleanup();
+            enemy.Reset();
+        }
+        baseEnemies.Clear();
+    }
+
 }

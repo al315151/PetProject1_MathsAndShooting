@@ -39,6 +39,11 @@ public class GameOverVisitor : IInitializable, IDisposable
         enemies.Add(baseEnemyView);
     }
 
+    public void ResetVisitors()
+    {
+        enemies.Clear();
+    }
+
     public void EnableGameOverDetection()
     {
         if (IsEndGameOverDetectionEnabled)

@@ -50,6 +50,11 @@ public class MovementVisitor : IInitializable, IDisposable
         registeredEntities.Add(entityMovement);
     }
 
+    public void ResetVisitors()
+    {
+        registeredEntities.Clear();
+    }
+
     private async UniTask UpdatePositionOnEntities()
     {
         var cachedTime = DateTime.UtcNow;

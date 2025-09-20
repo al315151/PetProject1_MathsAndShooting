@@ -29,7 +29,9 @@ public class EnemyBuilder : IEntityBuilder
 
         var newObjectEnemyView = gameObjectPool.GetBaseEnemyViewFromPool();
 
-        baseEnemy = new BaseEnemyController(newObjectEnemyView.gameObject);
+        baseEnemy = new BaseEnemyController(
+            newObjectEnemyView.gameObject,
+            gameObjectPool);
 
         BuildEntityView(newObjectEnemyView);
         BuildMovementBehaviour(newObjectEnemyView);
@@ -46,7 +48,7 @@ public class EnemyBuilder : IEntityBuilder
         baseEnemy.ComponentCleanup();
 
         // Return empty gameObject to pool
-        gameObjectPool.ReturnObjectToPool(baseEnemy.GetGameObject());
+        baseEnemy.Reset();
         baseEnemy = null;
     }
 
@@ -64,11 +66,7 @@ public class EnemyBuilder : IEntityBuilder
         var baseEnemyView = entityView as BaseEnemyView;
 
         baseEnemyView.SetViewPosition(graphicsPosition);
-        baseEnemyView.AcceptVisitor(gameOverVisitor);
-        
-        baseEnemy.AddComponentToEntity(baseEnemyView);
-
-        
+        baseEnemyView.AcceptVisitor(gameOverVisitor);        
     }
 
     public void BuildMovementBehaviour(EntityView entityView)

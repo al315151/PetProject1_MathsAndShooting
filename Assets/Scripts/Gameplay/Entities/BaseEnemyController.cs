@@ -5,12 +5,15 @@ public class BaseEnemyController : Entity
 {
 
     private readonly GameObject gameObjectReference;
-
+    private readonly IGameObjectPool gameObjectPool;
     private List<Component> components = new();
 
-    public BaseEnemyController(GameObject gameObjectReference)
+    public BaseEnemyController(
+        GameObject gameObjectReference,
+        IGameObjectPool gameObjectPool)
     {
         this.gameObjectReference = gameObjectReference;
+        this.gameObjectPool = gameObjectPool;
     }
 
     public override void AddComponentToEntity(Component entity)
@@ -34,9 +37,8 @@ public class BaseEnemyController : Entity
         gameObjectReference.transform.position = position;
     }
 
-    // Setup the enemy components from the builder, and arrange logic as intended.
-    public GameObject GetGameObject()
+    public void Reset()
     {
-        return gameObjectReference;
+        gameObjectPool.ReturnObjectToPool(gameObjectReference);
     }
 }

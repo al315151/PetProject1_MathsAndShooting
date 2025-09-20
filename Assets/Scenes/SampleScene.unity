@@ -463,6 +463,10 @@ PrefabInstance:
       propertyPath: endGameBoundsProvider
       value: 
       objectReference: {fileID: 588611425}
+    - target: {fileID: 8288220492537740274, guid: ff77520cbec528d489c3eb63b9882f19, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

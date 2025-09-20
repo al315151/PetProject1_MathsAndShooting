@@ -8,17 +8,23 @@ public class GameManager : IInitializable, IDisposable
     private readonly EntityDirector entityDirector;
     private readonly MovementVisitor movementVisitor;
     private readonly GameOverVisitor gameOverVisitor;
+    private readonly GameOverPopup gameOverPopup;
+    private readonly PlayerController playerController;
     private readonly IGameObjectPool gameObjectPool;
 
     public GameManager(
         EntityDirector entityDirector, 
         MovementVisitor movementVisitor,
         GameOverVisitor gameOverVisitor,
+        GameOverPopup gameOverPopup,
+        PlayerController playerController,
         IGameObjectPool gameObjectPool)
     {
         this.entityDirector = entityDirector;
         this.movementVisitor = movementVisitor;
         this.gameOverVisitor = gameOverVisitor;
+        this.gameOverPopup = gameOverPopup;
+        this.playerController = playerController;
         this.gameObjectPool = gameObjectPool;
     }
 
@@ -35,6 +41,8 @@ public class GameManager : IInitializable, IDisposable
 
     private async UniTask StartGameAsync()
     {
+        playerController.EnablePlayerInput();
+
         await UniTask.WaitUntil(() => gameObjectPool.IsInitialized);
 
         entityDirector.SpawnEnemies().Forget();
@@ -49,19 +57,44 @@ public class GameManager : IInitializable, IDisposable
     private void Subscribe()
     {
         gameOverVisitor.GameOverDetected += OnGameOverDetected;
+        gameOverPopup.RetryButtonPressed += OnRetryButtonPressed;
     }
 
     private void Unsubscribe()
     {
         gameOverVisitor.GameOverDetected -= OnGameOverDetected;
+        gameOverPopup.RetryButtonPressed -= OnRetryButtonPressed;
     }
 
     private void OnGameOverDetected()
     {
         Debug.Log($"[Framecount: {Time.frameCount}] Game Over detected, game stopped!");
         //Disable other systems until user input enables it again.
+        playerController.DisablePlayerInput();
         gameOverVisitor.DisableGameOverDetection();
         movementVisitor.DisableEntityMovement();
+        gameOverPopup.ShowPopup();
+    }
+
+    private void OnRetryButtonPressed()
+    {
+        gameOverPopup.HidePopup();
+
+        RestartGame().Forget();
+    }
+
+    private async UniTask RestartGame()
+    {
+        //First do the cleanup of all, then start the game again.
+        entityDirector.Cleanup();
+        gameOverVisitor.ResetVisitors();
+        movementVisitor.ResetVisitors();
+
+        //Wait for 1 second to make sure all objects have been destroyed / reset.
+        await UniTask.Delay( 1000 );
+
+        StartGameAsync().Forget();
+
 
     }
 }
