@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using NUnit.Framework;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -9,9 +11,11 @@ public class EntityDirector : IInitializable, IDisposable
 
     private IEntityBuilder entityBuilder;
 
+    private List<BaseEnemyController> baseEnemies;
+
     public EntityDirector(EnemyBuilder enemyBuilder)
     {
-        this.enemyBuilder = enemyBuilder;
+        this.enemyBuilder = enemyBuilder;        
     }
 
 
@@ -26,27 +30,27 @@ public class EntityDirector : IInitializable, IDisposable
 
     public void Initialize()
     {
-        SpawnEnemies().Forget();
     }
 
-    private async UniTask SpawnEnemies()
+    public async UniTask SpawnEnemies()
     {
-        await UniTask.Delay(5000);
+        baseEnemies = new List<BaseEnemyController>();
 
         for (int i = 0; i < 10; i++)
         {
-            CreateBasicEnemy();
+            var baseEnemy = CreateBasicEnemy();
+            baseEnemies.Add(baseEnemy);
 
             await UniTask.Delay(1000);
         }
     }
 
-    public BaseEnemy CreateBasicEnemy()
+    public BaseEnemyController CreateBasicEnemy()
     {
         entityBuilder = enemyBuilder;
         
         entityBuilder.Build();
         var enemy = entityBuilder.GetResult();
-        return (BaseEnemy)enemy;
+        return (BaseEnemyController)enemy;
     }
 }

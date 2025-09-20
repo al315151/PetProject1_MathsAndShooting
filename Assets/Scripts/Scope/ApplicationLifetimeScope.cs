@@ -30,6 +30,9 @@ public class ApplicationLifetimeScope : LifetimeScope
         builder.RegisterInstance(gameObjectPool).As<IGameObjectPool>();
         builder.RegisterInstance(enemySpawnPositionProvider).As<EnemySpawnPositionProvider>();
 
-        builder.Register<EntityDirector>(Lifetime.Scoped).As<IInitializable, IDisposable>();
+        builder.Register<EntityDirector>(Lifetime.Scoped).As<IInitializable, IDisposable, EntityDirector>();
+        builder.Register<MovementVisitor>(Lifetime.Scoped).As<IInitializable, IDisposable, MovementVisitor>();
+
+        builder.Register<GameManager>(Lifetime.Scoped).As<IInitializable, IDisposable>();
     }
 }

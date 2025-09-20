@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseEnemy : Entity
+public class BaseEnemyController : Entity
 {
 
     private readonly GameObject gameObjectReference;
 
     private List<Component> components = new();
 
-    public BaseEnemy(GameObject gameObjectReference)
+    public BaseEnemyController(GameObject gameObjectReference)
     {
         this.gameObjectReference = gameObjectReference;
     }

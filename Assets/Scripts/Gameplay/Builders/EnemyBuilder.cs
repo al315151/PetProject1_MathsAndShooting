@@ -4,16 +4,19 @@ using UnityEngine;
 public class EnemyBuilder : IEntityBuilder
 {
 
-    private BaseEnemy baseEnemy;
+    private BaseEnemyController baseEnemy;
     private readonly IGameObjectPool gameObjectPool;
     private readonly EnemySpawnPositionProvider enemySpawnPositionProvider;
+    private readonly MovementVisitor movementVisitor;
 
     public EnemyBuilder(
         IGameObjectPool gameObjectPool,
-        EnemySpawnPositionProvider enemySpawnPositionProvider)
+        EnemySpawnPositionProvider enemySpawnPositionProvider,
+        MovementVisitor movementVisitor)
     {
         this.gameObjectPool = gameObjectPool;
         this.enemySpawnPositionProvider = enemySpawnPositionProvider;
+        this.movementVisitor = movementVisitor;
     }
 
 
@@ -23,9 +26,10 @@ public class EnemyBuilder : IEntityBuilder
 
         var newObjectEnemyView = gameObjectPool.GetBaseEnemyViewFromPool();
 
-        baseEnemy = new BaseEnemy(newObjectEnemyView.gameObject);
+        baseEnemy = new BaseEnemyController(newObjectEnemyView.gameObject);
 
         BuildEntityView(newObjectEnemyView);
+        BuildMovementBehaviour(newObjectEnemyView);
     }
 
     public Entity GetResult()
@@ -58,4 +62,14 @@ public class EnemyBuilder : IEntityBuilder
         
         baseEnemy.AddComponentToEntity(baseEnemyView);
     }
+
+    public void BuildMovementBehaviour(EntityView entityView)
+    {
+        var newEntityMovement = entityView.gameObject.AddComponent<EntityMovement>();
+        baseEnemy.AddComponentToEntity(newEntityMovement);
+
+        newEntityMovement.Initialize(entityView.gameObject.transform.position);
+        newEntityMovement.AcceptVisitor(movementVisitor);
+    }
+
 }
