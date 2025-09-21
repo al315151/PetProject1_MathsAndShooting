@@ -8,6 +8,7 @@ public class EnemyBuilder : IEntityBuilder
     private readonly IGameObjectPool gameObjectPool;
     private readonly EnemySpawnPositionProvider enemySpawnPositionProvider;
     private readonly MovementVisitor movementVisitor;
+    private readonly BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor;
     private readonly EnemyConfig enemyConfig;
     private readonly GameOverVisitor gameOverVisitor;
 
@@ -15,12 +16,14 @@ public class EnemyBuilder : IEntityBuilder
         IGameObjectPool gameObjectPool,
         EnemySpawnPositionProvider enemySpawnPositionProvider,
         MovementVisitor movementVisitor,
+        BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor,
         EnemyConfig enemyConfig,
         GameOverVisitor gameOverVisitor)
     {
         this.gameObjectPool = gameObjectPool;
         this.enemySpawnPositionProvider = enemySpawnPositionProvider;
         this.movementVisitor = movementVisitor;
+        this.bulletAndEnemyCollisionVisitor = bulletAndEnemyCollisionVisitor;
         this.enemyConfig = enemyConfig;
         this.gameOverVisitor = gameOverVisitor;
     }
@@ -33,7 +36,7 @@ public class EnemyBuilder : IEntityBuilder
         var newObjectEnemyView = gameObjectPool.GetBaseEnemyViewFromPool();
 
         baseEnemy = new BaseEnemyController(
-            newObjectEnemyView.gameObject,
+            newObjectEnemyView,
             gameObjectPool);
 
         BuildEntityView(newObjectEnemyView);
@@ -69,7 +72,8 @@ public class EnemyBuilder : IEntityBuilder
         var baseEnemyView = entityView as BaseEnemyView;
 
         baseEnemyView.SetViewPosition(graphicsPosition);
-        baseEnemyView.AcceptVisitor(gameOverVisitor);        
+        baseEnemyView.AcceptVisitor(gameOverVisitor);
+        baseEnemyView.AcceptVisitor(bulletAndEnemyCollisionVisitor);
     }
 
     public void BuildMovementBehaviour(EntityView entityView)

@@ -6,6 +6,7 @@ public class BaseBulletBuilder : IEntityBuilder
     private readonly IGameObjectPool gameObjectPool;
     private readonly BulletConfig bulletConfig;
     private readonly PlayerController playerController;
+    private readonly BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor;
     private readonly MovementVisitor movementVisitor;
     private BaseBulletController bulletController;
 
@@ -13,11 +14,13 @@ public class BaseBulletBuilder : IEntityBuilder
         IGameObjectPool gameObjectPool,
         BulletConfig bulletConfig,
         PlayerController playerController,
+        BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor,
         MovementVisitor movementVisitor)
     {
         this.gameObjectPool = gameObjectPool;
         this.bulletConfig = bulletConfig;
         this.playerController = playerController;
+        this.bulletAndEnemyCollisionVisitor = bulletAndEnemyCollisionVisitor;
         this.movementVisitor = movementVisitor;
     }
 
@@ -27,11 +30,6 @@ public class BaseBulletBuilder : IEntityBuilder
 
         var newBulletView = gameObjectPool.GetBaseBulletViewFromPool();
 
-        if (newBulletView == null)
-        {
-            Debug.Log("Set entity view called for base bullet without gameObject created! Aborting EntityView Creation");
-        }
-
         bulletController = new BaseBulletController(
             newBulletView,
             gameObjectPool);
@@ -40,15 +38,18 @@ public class BaseBulletBuilder : IEntityBuilder
         BuildMovementBehaviour(newBulletView);
     }
 
-    public void BuildEntityView(EntityView baseObject)
+    public void BuildEntityView(EntityView entityView)
     {
         if(bulletController == null)
         {
             Debug.Log("Set entity view called for base bullet without gameObject created! Aborting EntityView Creation");
             return;
         }
-         
+
         //TODO: add collision detection between enemies and bullets.
+        var bulletView = entityView as BaseBulletView;
+
+        bulletView.AcceptVisitor(bulletAndEnemyCollisionVisitor);
     }
 
     public Entity GetResult()

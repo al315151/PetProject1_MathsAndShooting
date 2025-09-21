@@ -31,7 +31,7 @@ public class GameOverVisitor : IInitializable, IDisposable
         cancellationTokenSource?.Cancel();
         cancellationTokenSource?.Dispose();
 
-        enemies.Clear();
+        ResetVisitors();
     }
 
     public void AcceptBaseEnemyVisit(BaseEnemyView baseEnemyView)

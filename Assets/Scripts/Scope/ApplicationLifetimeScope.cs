@@ -45,6 +45,11 @@ public class ApplicationLifetimeScope : LifetimeScope
         builder.Register<EntityDirector>(Lifetime.Scoped).As<IInitializable, IDisposable, EntityDirector>();
         builder.Register<MovementVisitor>(Lifetime.Scoped).As<IInitializable, IDisposable, MovementVisitor>();
         builder.Register<GameOverVisitor>(Lifetime.Scoped).As<IInitializable, IDisposable, GameOverVisitor>();
+        builder.Register<BulletAndEnemyCollisionVisitor>(Lifetime.Scoped).As<IInitializable, IDisposable, BulletAndEnemyCollisionVisitor>();
+        builder.Register<EntityDespawner>(Lifetime.Scoped).As<IDisposable, IInitializable, EntityDespawner>();
+
+        builder.Register<EnemyControllerProvider>(Lifetime.Scoped).As<IInitializable, IDisposable, EnemyControllerProvider>();
+        builder.Register<BulletControllerProvider>(Lifetime.Scoped).As<IInitializable, IDisposable, BulletControllerProvider>();
 
         builder.Register<ShootingManager>(Lifetime.Scoped).As<IInitializable, IDisposable, ShootingManager>();
         builder.Register<GameManager>(Lifetime.Scoped).As<IInitializable, IDisposable>();

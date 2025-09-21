@@ -121,3 +121,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c14cc288271dbae4cb829e22f9cc3633, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bulletBoundsCollider: {fileID: 4075374211763482915}

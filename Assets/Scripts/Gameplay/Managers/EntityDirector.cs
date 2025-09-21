@@ -7,6 +7,8 @@ public class EntityDirector : IInitializable, IDisposable
 {
     private readonly EnemyBuilder enemyBuilder;
     private readonly BaseBulletBuilder baseBulletBuilder;
+    private readonly BulletControllerProvider bulletControllerProvider;
+    private readonly EnemyControllerProvider enemyControllerProvider;
     private readonly PlayerController playerController;
 
     private List<BaseEnemyController> baseEnemies;
@@ -16,10 +18,14 @@ public class EntityDirector : IInitializable, IDisposable
     public EntityDirector(
         EnemyBuilder enemyBuilder,
         BaseBulletBuilder baseBulletBuilder,
+        BulletControllerProvider bulletControllerProvider,
+        EnemyControllerProvider enemyControllerProvider,
         PlayerController playerController)
     {
         this.enemyBuilder = enemyBuilder;
         this.baseBulletBuilder = baseBulletBuilder;
+        this.bulletControllerProvider = bulletControllerProvider;
+        this.enemyControllerProvider = enemyControllerProvider;
         this.playerController = playerController;
     }
 
@@ -44,6 +50,11 @@ public class EntityDirector : IInitializable, IDisposable
             var baseEnemy = await CreateBasicEnemy();
             baseEnemies.Add(baseEnemy);
 
+            baseEnemy.SetupEnemyID(baseEnemy.GetHashCode());
+            enemyControllerProvider.AddEnemyController(baseEnemy);
+
+            baseEnemy.Despawned += OnEnemyDespawned;
+
             await UniTask.Delay(1000);
         }
     }
@@ -52,8 +63,30 @@ public class EntityDirector : IInitializable, IDisposable
     {
         var newBullet = await CreateBasicBullet();
         baseBulletControllers.Add(newBullet);
+        
+        newBullet.SetBulletID(newBullet.GetHashCode());
+        bulletControllerProvider.AddBulletController(newBullet);
+
+        newBullet.Despawned += OnBulletDespawned;
+
         newBullet.SetBulletStartPosition(playerController.GetBulletSpawnPosition());
         return newBullet;
+    }
+
+    private void OnBulletDespawned(BaseBulletController controller)
+    {
+        controller.ComponentCleanup();
+        controller.Despawned -= OnBulletDespawned;
+        baseBulletControllers.Remove(controller);
+        bulletControllerProvider.RemoveBulletController(controller);
+    }
+
+    private void OnEnemyDespawned(BaseEnemyController controller)
+    {
+        controller.ComponentCleanup();
+        controller.Despawned -= OnEnemyDespawned;
+        baseEnemies.Remove(controller);
+        enemyControllerProvider.RemoveEnemyController(controller);
     }
 
     public async UniTask<BaseEnemyController> CreateBasicEnemy()

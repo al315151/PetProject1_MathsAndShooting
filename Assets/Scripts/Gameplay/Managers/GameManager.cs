@@ -8,6 +8,7 @@ public class GameManager : IInitializable, IDisposable
     private readonly EntityDirector entityDirector;
     private readonly MovementVisitor movementVisitor;
     private readonly GameOverVisitor gameOverVisitor;
+    private readonly BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor;
     private readonly GameOverPopup gameOverPopup;
     private readonly PlayerController playerController;
     private readonly ShootingManager shootingManager;
@@ -17,6 +18,7 @@ public class GameManager : IInitializable, IDisposable
         EntityDirector entityDirector, 
         MovementVisitor movementVisitor,
         GameOverVisitor gameOverVisitor,
+        BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor,
         GameOverPopup gameOverPopup,
         PlayerController playerController,
         ShootingManager shootingManager,
@@ -25,6 +27,7 @@ public class GameManager : IInitializable, IDisposable
         this.entityDirector = entityDirector;
         this.movementVisitor = movementVisitor;
         this.gameOverVisitor = gameOverVisitor;
+        this.bulletAndEnemyCollisionVisitor = bulletAndEnemyCollisionVisitor;
         this.gameOverPopup = gameOverPopup;
         this.playerController = playerController;
         this.shootingManager = shootingManager;
@@ -51,6 +54,7 @@ public class GameManager : IInitializable, IDisposable
         entityDirector.SpawnEnemies().Forget();
 
         movementVisitor.EnableEntityMovement();
+        bulletAndEnemyCollisionVisitor.EnableCollisionDetection();
         
         shootingManager.EnableShooting();
 
@@ -79,6 +83,7 @@ public class GameManager : IInitializable, IDisposable
         shootingManager.DisableShooting();
         gameOverVisitor.DisableGameOverDetection();
         movementVisitor.DisableEntityMovement();
+        bulletAndEnemyCollisionVisitor.DisableCollisionDetection();
         gameOverPopup.ShowPopup();
     }
 
@@ -95,6 +100,7 @@ public class GameManager : IInitializable, IDisposable
         entityDirector.Cleanup();
         gameOverVisitor.ResetVisitors();
         movementVisitor.ResetVisitors();
+        bulletAndEnemyCollisionVisitor.ResetVisitors();
 
         //Wait for 1 second to make sure all objects have been destroyed / reset.
         await UniTask.Delay( 1000 );

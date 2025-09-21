@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class EntityMovement : MonoBehaviour, IEntityMovement
 {
-
     public bool IsEntityMovementAllowed => isEntityMovementAllowed;
 
     private float entitySpeed;    
@@ -12,6 +11,8 @@ public class EntityMovement : MonoBehaviour, IEntityMovement
     private bool isPositionUpdated;
     private bool isEntityMovementAllowed;
 
+    private MovementVisitor movementVisitor;
+
     public void Initialize(Vector3 position)
     {
         targetPosition = position;
@@ -20,6 +21,7 @@ public class EntityMovement : MonoBehaviour, IEntityMovement
 
     public void AcceptVisitor(MovementVisitor visitor)
     {
+        movementVisitor = visitor;
         visitor.VisitEntityMovement(this);
     }
 
@@ -30,6 +32,11 @@ public class EntityMovement : MonoBehaviour, IEntityMovement
             transform.position = targetPosition;
             isPositionUpdated = false;
         }
+    }
+
+    private void OnDestroy()
+    {
+        movementVisitor?.RemoveVisitor(this);
     }
 
     public void EnableMovement()

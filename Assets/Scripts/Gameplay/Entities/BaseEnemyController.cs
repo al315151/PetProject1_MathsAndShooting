@@ -1,18 +1,26 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BaseEnemyController : Entity
 {
 
-    private readonly GameObject gameObjectReference;
+    private readonly BaseEnemyView baseEnemyView;
     private readonly IGameObjectPool gameObjectPool;
+
+    public Action<BaseEnemyController> Despawned;
+
+    public int EnemyID => enemyID;
+
     private List<Component> components = new();
 
+    private int enemyID;
+
     public BaseEnemyController(
-        GameObject gameObjectReference,
+        BaseEnemyView baseEnemyView,
         IGameObjectPool gameObjectPool)
     {
-        this.gameObjectReference = gameObjectReference;
+        this.baseEnemyView = baseEnemyView;
         this.gameObjectPool = gameObjectPool;
     }
 
@@ -27,18 +35,37 @@ public class BaseEnemyController : Entity
         {
             if (components[i] != null)
             {
-                Object.Destroy(components[i]);
+                UnityEngine.Object.Destroy(components[i]);
             }
         }
     }
 
+    public void Despawn()
+    {
+        Reset();
+        Despawned?.Invoke(this);
+    }
+
+    public void SetupEnemyID(int enemyID)
+    {
+        this.enemyID = enemyID;
+        baseEnemyView.SetupEnemyID(enemyID);
+    }
+
+    public void ResetEnemyID()
+    {
+        this.enemyID = -1;
+        baseEnemyView.ResetEnemyID();
+    }
+
     public void SetupEnemyPosition(Vector3 position)
     {
-        gameObjectReference.transform.position = position;
+        baseEnemyView.SetViewPosition(position);
     }
 
     public override void Reset()
     {
-        gameObjectPool.ReturnObjectToPool(gameObjectReference);
+        ResetEnemyID();
+        gameObjectPool.ReturnObjectToPool(baseEnemyView.gameObject);
     }
 }

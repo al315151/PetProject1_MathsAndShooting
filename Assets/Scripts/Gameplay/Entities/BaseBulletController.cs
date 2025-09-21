@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,9 +7,15 @@ public class BaseBulletController : Entity
     private readonly BaseBulletView baseBulletView;
     private readonly IGameObjectPool gameObjectPool;
 
+    public int BulletID => bulletID;
+
+    public Action<BaseBulletController> Despawned;
+
     private EntityMovement entityMovement;
 
     private List<Component> components = new();
+
+    private int bulletID;
 
     public BaseBulletController(
         BaseBulletView baseBulletView,
@@ -29,14 +36,28 @@ public class BaseBulletController : Entity
         {
             if (components[i] != null)
             {
-                Object.Destroy(components[i]);
+                UnityEngine.Object.Destroy(components[i]);
             }
         }
     }
 
     public override void Reset()
     {
+        bulletID = -1;
+        baseBulletView.ResetBulletID();
         gameObjectPool.ReturnObjectToPool(baseBulletView.gameObject);
+    }
+
+    public void SetBulletID(int bulletID)
+    {
+        this.bulletID = bulletID;
+        baseBulletView.SetBulletID(bulletID);
+    }
+
+    public void Despawn()
+    {
+        Reset();
+        Despawned?.Invoke(this);
     }
 
     public void EnableEntityMovement()

@@ -50,6 +50,15 @@ public class MovementVisitor : IInitializable, IDisposable
         registeredEntities.Add(entityMovement);
     }
 
+    public void RemoveVisitor(EntityMovement visitor)
+    {
+        if ( registeredEntities.Contains(visitor) == false)
+        {
+            return;
+        }
+        registeredEntities.Remove(visitor);
+    }
+
     public void ResetVisitors()
     {
         registeredEntities.Clear();
