@@ -106,7 +106,7 @@ public class BulletAndEnemyCollisionVisitor : IInitializable, IDisposable
                         CollisionDetected?.Invoke(enemyViews[i], bulletViews[j]);
 
                         bulletViews.Remove(bulletViews[j]);
-                        enemyViews.Remove(enemyViews[j]);                       
+                        enemyViews.Remove(enemyViews[i]);                       
                     }
                     break;
                 }
