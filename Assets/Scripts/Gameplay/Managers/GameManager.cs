@@ -10,6 +10,7 @@ public class GameManager : IInitializable, IDisposable
     private readonly GameOverVisitor gameOverVisitor;
     private readonly GameOverPopup gameOverPopup;
     private readonly PlayerController playerController;
+    private readonly ShootingManager shootingManager;
     private readonly IGameObjectPool gameObjectPool;
 
     public GameManager(
@@ -18,6 +19,7 @@ public class GameManager : IInitializable, IDisposable
         GameOverVisitor gameOverVisitor,
         GameOverPopup gameOverPopup,
         PlayerController playerController,
+        ShootingManager shootingManager,
         IGameObjectPool gameObjectPool)
     {
         this.entityDirector = entityDirector;
@@ -25,6 +27,7 @@ public class GameManager : IInitializable, IDisposable
         this.gameOverVisitor = gameOverVisitor;
         this.gameOverPopup = gameOverPopup;
         this.playerController = playerController;
+        this.shootingManager = shootingManager;
         this.gameObjectPool = gameObjectPool;
     }
 
@@ -48,6 +51,8 @@ public class GameManager : IInitializable, IDisposable
         entityDirector.SpawnEnemies().Forget();
 
         movementVisitor.EnableEntityMovement();
+        
+        shootingManager.EnableShooting();
 
         gameOverVisitor.EnableGameOverDetection();
         // Maybe start doing more things here?
@@ -71,6 +76,7 @@ public class GameManager : IInitializable, IDisposable
         Debug.Log($"[Framecount: {Time.frameCount}] Game Over detected, game stopped!");
         //Disable other systems until user input enables it again.
         playerController.DisablePlayerInput();
+        shootingManager.DisableShooting();
         gameOverVisitor.DisableGameOverDetection();
         movementVisitor.DisableEntityMovement();
         gameOverPopup.ShowPopup();

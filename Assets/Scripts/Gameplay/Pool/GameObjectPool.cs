@@ -8,11 +8,16 @@ public class GameObjectPool : MonoBehaviour, IGameObjectPool
     [SerializeField]
     private GameObject basicEnemyReference;
 
+    [SerializeField]
+    private GameObject baseBulletReference;
+
     public bool IsInitialized => poolInitialized;
 
     private List<GameObject> gameObjectPool;
 
     private List<BaseEnemyView> baseEnemyViewPool;
+
+    private List<BaseBulletView> baseBulletViewsPool;
 
     private bool poolInitialized;
 
@@ -50,6 +55,23 @@ public class GameObjectPool : MonoBehaviour, IGameObjectPool
         return null;
     }
 
+    public BaseBulletView GetBaseBulletViewFromPool()
+    {
+        for (int i = 0; i < baseBulletViewsPool.Count; i++)
+        {
+            if (baseBulletViewsPool[i] == null)
+            {
+                continue;
+            }
+            var go = baseBulletViewsPool[i];
+            go.gameObject.SetActive(true);
+            baseBulletViewsPool.Remove(go);
+            return go;
+        }
+
+        return null;
+    }
+
     public void Awake()
     {
         poolInitialized = false;
@@ -60,6 +82,7 @@ public class GameObjectPool : MonoBehaviour, IGameObjectPool
 
     private void InitializeGameObjectPool()
     {
+        /*
         gameObjectPool = new List<GameObject>();
         for (int i = 0; i < GameObjectPoolCount; i++)
         {
@@ -70,6 +93,7 @@ public class GameObjectPool : MonoBehaviour, IGameObjectPool
 
             gameObjectPool.Add(newGameObject);
         }
+        //*/
 
         baseEnemyViewPool = new List<BaseEnemyView>();
         for (int i = 0;i < GameObjectPoolCount; i++)
@@ -81,6 +105,15 @@ public class GameObjectPool : MonoBehaviour, IGameObjectPool
             baseEnemyViewPool.Add(newBaseEnemyView.GetComponent<BaseEnemyView>());
         }
 
+        baseBulletViewsPool = new List<BaseBulletView>();
+        for (int i = 0; i < GameObjectPoolCount; i++)
+        {
+            var newBulletBaseView = Instantiate(baseBulletReference, transform);
+            newBulletBaseView.name = newBulletBaseView.name + "_" + i;
+            newBulletBaseView.SetActive(false);
+
+            baseBulletViewsPool.Add(newBulletBaseView.GetComponent<BaseBulletView>());
+        }
     }
 
     public void ReturnObjectToPool(GameObject objectToReturn)
@@ -90,17 +123,24 @@ public class GameObjectPool : MonoBehaviour, IGameObjectPool
             return;
         }
 
+        objectToReturn.SetActive(false);
+
         var isObjectEnemyView = objectToReturn.TryGetComponent<BaseEnemyView>(out var baseEnemyView);
+        var isBaseBulletView = objectToReturn.TryGetComponent<BaseBulletView>(out var baseBulletView);
 
         if (isObjectEnemyView)
         {
             baseEnemyViewPool.Add(baseEnemyView);
+        }
+        else if (isBaseBulletView)
+        {
+            baseBulletViewsPool.Add(baseBulletView);
         }
         else
         {
             gameObjectPool.Add(objectToReturn);
         }
             
-        objectToReturn.SetActive(false);
+        
     }
 }

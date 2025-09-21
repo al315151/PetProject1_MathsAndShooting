@@ -37,7 +37,7 @@ public class BaseEnemyController : Entity
         gameObjectReference.transform.position = position;
     }
 
-    public void Reset()
+    public override void Reset()
     {
         gameObjectPool.ReturnObjectToPool(gameObjectReference);
     }

@@ -63,6 +63,10 @@ public class MovementVisitor : IInitializable, IDisposable
             var currentTimeSpan = (DateTime.UtcNow - cachedTime).TotalMilliseconds;
             for (int i = 0; i < registeredEntities.Count; i++)
             {
+                if (registeredEntities[i].IsEntityMovementAllowed == false)
+                {
+                    continue;
+                }
                 registeredEntities[i].UpdatePosition((float)currentTimeSpan / 1000f);
             }
             cachedTime = DateTime.UtcNow;

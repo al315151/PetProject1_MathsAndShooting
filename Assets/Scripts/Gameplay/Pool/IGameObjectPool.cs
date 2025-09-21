@@ -6,5 +6,7 @@ public interface IGameObjectPool
     public GameObject GetGameObjectFromPool();
     public BaseEnemyView GetBaseEnemyViewFromPool();
 
+    public BaseBulletView GetBaseBulletViewFromPool();
+
     public void ReturnObjectToPool(GameObject objectToReturn);
 }

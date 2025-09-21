@@ -33,6 +33,11 @@ public class PlayerController : IInitializable, IDisposable
         Unsubscribe();
     }
 
+    public Vector3 GetBulletSpawnPosition()
+    {
+        return playerView.GetBulletSpawnPosition();
+    }
+
     public void EnablePlayerInput()
     {
         InputEnabled = true;
@@ -46,12 +51,12 @@ public class PlayerController : IInitializable, IDisposable
 
     private void Subscribe()
     {
-        inputManager.OnPlayerInputReceived += OnPlayerInputReceived;
+        inputManager.OnPlayerMovementInputReceived += OnPlayerInputReceived;
     }
 
     private void Unsubscribe()
     {
-        inputManager.OnPlayerInputReceived -= OnPlayerInputReceived;
+        inputManager.OnPlayerMovementInputReceived -= OnPlayerInputReceived;
     }
     
     private void OnPlayerInputReceived(Vector3 inputPosition)

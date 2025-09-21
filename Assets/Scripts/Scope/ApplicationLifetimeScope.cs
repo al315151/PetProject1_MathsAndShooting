@@ -27,9 +27,13 @@ public class ApplicationLifetimeScope : LifetimeScope
     {
         builder.Register<PlayerConfig>(Lifetime.Scoped).As<IPlayerConfig>();
         builder.Register<PlayerController>(Lifetime.Scoped).As<IInitializable, IDisposable, PlayerController>();
-        builder.Register<InputManager>(Lifetime.Scoped).As<IInitializable, IDisposable, ITickable, InputManager>();
+        builder.Register<InputManager>(Lifetime.Scoped).As<ITickable, InputManager>();
 
         builder.Register<EnemyBuilder>(Lifetime.Scoped).AsSelf();
+        builder.Register<BaseBulletBuilder>(Lifetime.Scoped).AsSelf();
+
+        builder.Register<EnemyConfig>(Lifetime.Scoped).AsSelf();
+        builder.Register<BulletConfig>(Lifetime.Scoped).AsSelf();
 
         builder.RegisterInstance(cameraProvider);
         builder.RegisterInstance(playerView);
@@ -42,6 +46,8 @@ public class ApplicationLifetimeScope : LifetimeScope
         builder.Register<MovementVisitor>(Lifetime.Scoped).As<IInitializable, IDisposable, MovementVisitor>();
         builder.Register<GameOverVisitor>(Lifetime.Scoped).As<IInitializable, IDisposable, GameOverVisitor>();
 
+        builder.Register<ShootingManager>(Lifetime.Scoped).As<IInitializable, IDisposable, ShootingManager>();
         builder.Register<GameManager>(Lifetime.Scoped).As<IInitializable, IDisposable>();
+        
     }
 }

@@ -3,28 +3,19 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using VContainer.Unity;
 
-public class InputManager : IInitializable, IDisposable, ITickable
+public class InputManager : ITickable
 {
     private readonly int interactionLayer = LayerMask.GetMask("PlayerInteraction");
 
     private readonly CameraProvider cameraProvider;
 
-    public Action<Vector3> OnPlayerInputReceived;
+    public Action<Vector3> OnPlayerMovementInputReceived;
 
+    public Action PlayerShootInputReceived;
 
     public InputManager(CameraProvider cameraProvider)
     {
         this.cameraProvider = cameraProvider;
-
-    }
-
-    public void Initialize()
-    {
-
-    }
-
-    public void Dispose()
-    { 
     }
 
     public void Tick()
@@ -45,6 +36,10 @@ public class InputManager : IInitializable, IDisposable, ITickable
         if (Input.GetMouseButton(0))
         {
             GetWorldPositionFromScreenPosition(Input.mousePosition);
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            PlayerShootInputReceived?.Invoke();
         }
 
         return UniTask.CompletedTask;
@@ -72,7 +67,7 @@ public class InputManager : IInitializable, IDisposable, ITickable
             for (var i = 0; i < numberOfHits; i++)
             {
                 //Debug.Log($"Position obtained by raycast: {raycastResults[i].point}");
-                OnPlayerInputReceived?.Invoke(raycastResults[i].point);
+                OnPlayerMovementInputReceived?.Invoke(raycastResults[i].point);
             }
         }
 

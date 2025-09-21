@@ -122,6 +122,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PoolSystem
       objectReference: {fileID: 0}
+    - target: {fileID: 8697297143635174034, guid: 40a853c6800606e48ac81e9a88264810, type: 3}
+      propertyPath: baseBulletReference
+      value: 
+      objectReference: {fileID: 7876834553892519037, guid: 012ca95628a3fd2449fa87cc6535cb48, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
