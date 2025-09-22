@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using VContainer.Unity;
 
 public class EntityDespawner : IInitializable, IDisposable
@@ -30,9 +31,17 @@ public class EntityDespawner : IInitializable, IDisposable
     private void OnCollisionDetected(BaseEnemyView enemyView, BaseBulletView bulletView)
     {
         var bulletController = bulletControllerProvider.GetBulletController(bulletView);
+        if (bulletController == null)
+        {
+            Debug.LogError($"[Framecount: {Time.frameCount}] Bullet controller not found! bullet view name: {bulletView.gameObject.name}");
+        }
         bulletController?.Despawn();
 
         var enemyController = enemyControllerProvider.GetEnemyController(enemyView);
+        if (enemyController == null)
+        {
+            Debug.LogError($"[Framecount: {Time.frameCount}] enemy controller not found! eenemy view name: {enemyView.gameObject.name}");
+        }
         enemyController?.Despawn();
 
     }

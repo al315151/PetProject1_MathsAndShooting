@@ -9,8 +9,9 @@ public class GameManager : IInitializable, IDisposable
     private readonly MovementVisitor movementVisitor;
     private readonly GameOverVisitor gameOverVisitor;
     private readonly BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor;
-    private readonly GameOverPopup gameOverPopup;
     private readonly PlayerController playerController;
+    private readonly GameEndController gameEndController;
+    private readonly GameEndSolver gameEndSolver;
     private readonly ShootingManager shootingManager;
     private readonly IGameObjectPool gameObjectPool;
 
@@ -19,8 +20,9 @@ public class GameManager : IInitializable, IDisposable
         MovementVisitor movementVisitor,
         GameOverVisitor gameOverVisitor,
         BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor,
-        GameOverPopup gameOverPopup,
         PlayerController playerController,
+        GameEndController gameEndController,
+        GameEndSolver gameEndSolver,
         ShootingManager shootingManager,
         IGameObjectPool gameObjectPool)
     {
@@ -28,8 +30,9 @@ public class GameManager : IInitializable, IDisposable
         this.movementVisitor = movementVisitor;
         this.gameOverVisitor = gameOverVisitor;
         this.bulletAndEnemyCollisionVisitor = bulletAndEnemyCollisionVisitor;
-        this.gameOverPopup = gameOverPopup;
         this.playerController = playerController;
+        this.gameEndController = gameEndController;
+        this.gameEndSolver = gameEndSolver;
         this.shootingManager = shootingManager;
         this.gameObjectPool = gameObjectPool;
     }
@@ -65,14 +68,16 @@ public class GameManager : IInitializable, IDisposable
 
     private void Subscribe()
     {
-        gameOverVisitor.GameOverDetected += OnGameOverDetected;
-        gameOverPopup.RetryButtonPressed += OnRetryButtonPressed;
+        gameOverVisitor.GameLostDetected += OnGameOverDetected;
+        gameEndSolver.GameWonDetected += OnGameOverDetected;
+        gameEndController.RetryButtonPressed += OnRetryButtonPressed;
     }
 
     private void Unsubscribe()
     {
-        gameOverVisitor.GameOverDetected -= OnGameOverDetected;
-        gameOverPopup.RetryButtonPressed -= OnRetryButtonPressed;
+        gameOverVisitor.GameLostDetected -= OnGameOverDetected;
+        gameEndSolver.GameWonDetected -= OnGameOverDetected;
+        gameEndController.RetryButtonPressed -= OnRetryButtonPressed;
     }
 
     private void OnGameOverDetected()
@@ -84,13 +89,10 @@ public class GameManager : IInitializable, IDisposable
         gameOverVisitor.DisableGameOverDetection();
         movementVisitor.DisableEntityMovement();
         bulletAndEnemyCollisionVisitor.DisableCollisionDetection();
-        gameOverPopup.ShowPopup();
     }
 
     private void OnRetryButtonPressed()
     {
-        gameOverPopup.HidePopup();
-
         RestartGame().Forget();
     }
 
@@ -101,6 +103,7 @@ public class GameManager : IInitializable, IDisposable
         gameOverVisitor.ResetVisitors();
         movementVisitor.ResetVisitors();
         bulletAndEnemyCollisionVisitor.ResetVisitors();
+        gameEndSolver.ResetSolverState();
 
         //Wait for 1 second to make sure all objects have been destroyed / reset.
         await UniTask.Delay( 1000 );

@@ -82,9 +82,11 @@ public class BulletAndEnemyCollisionVisitor : IInitializable, IDisposable
             var collisionDetected = false;
             for(int i = 0; i < enemyViews.Count; i++)
             {
+
                 var (enemyWorldSpaceCenter, enemyBounds) = enemyViews[i].GetEnemyWorldSpaceCenterAndBounds();
                 if (enemyBounds == null)
                 {
+                    Debug.Log($"[Framecount: {Time.frameCount}] Enemy not found!at index: {i}");
                     continue;
                 }
 
@@ -93,6 +95,7 @@ public class BulletAndEnemyCollisionVisitor : IInitializable, IDisposable
                     var (bulletWorldSpaceCenter, bulletBounds) = bulletViews[j].GetBulletWorldSpaceCenterAndBounds();
                     if (bulletBounds == null)
                     {
+                        Debug.Log($"[Framecount: {Time.frameCount}] Bullet not found! at index: {j}");
                         continue;
                     }
                     if (CollisionBetweenTwoObjectsSolver.AreTwoObjectsColliding(

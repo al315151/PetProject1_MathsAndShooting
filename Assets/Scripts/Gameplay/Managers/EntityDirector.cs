@@ -15,6 +15,8 @@ public class EntityDirector : IInitializable, IDisposable
 
     private List<BaseBulletController> baseBulletControllers;
 
+    public Action FinishedSpawnOfEnemies;
+
     public EntityDirector(
         EnemyBuilder enemyBuilder,
         BaseBulletBuilder baseBulletBuilder,
@@ -57,6 +59,8 @@ public class EntityDirector : IInitializable, IDisposable
 
             await UniTask.Delay(1000);
         }
+
+        FinishedSpawnOfEnemies?.Invoke();
     }
 
     public async UniTask<BaseBulletController> SpawnBullet()

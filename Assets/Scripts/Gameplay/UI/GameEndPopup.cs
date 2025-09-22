@@ -1,14 +1,21 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverPopup : MonoBehaviour
+public class GameEndPopup : MonoBehaviour
 {
     [SerializeField]
     private GameObject popupContainer;
 
     [SerializeField]
     private Button retryButton;
+
+    [SerializeField]
+    private TMP_Text popupText;
+
+    [SerializeField]
+    private TMP_Text buttonText;
 
     public Action RetryButtonPressed;
 
@@ -22,6 +29,12 @@ public class GameOverPopup : MonoBehaviour
     private void OnDestroy()
     {
         retryButton.onClick.RemoveListener(OnRetryButtonPressed);
+    }
+
+    public void SetupButtonText(string buttonText, string popupText)
+    {
+        this.buttonText.SetText(buttonText);
+        this.popupText.SetText(popupText);
     }
 
     public void ShowPopup()

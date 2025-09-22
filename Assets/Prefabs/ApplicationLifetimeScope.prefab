@@ -57,7 +57,7 @@ MonoBehaviour:
   gameObjectPool: {fileID: 8810903594570686391}
   enemySpawnPositionProvider: {fileID: 3290256491861116284}
   endGameBoundsProvider: {fileID: 0}
-  gameOverPopup: {fileID: 1058611191612644670}
+  gameOverPopup: {fileID: 3007515391173839760}
 --- !u!114 &5668529452585645011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -317,15 +317,15 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0d19015c6da79a4aae5fb733e8127b6, type: 3}
---- !u!114 &1058611191612644670 stripped
+--- !u!114 &3007515391173839760 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4696413180325343950, guid: f0d19015c6da79a4aae5fb733e8127b6, type: 3}
+  m_CorrespondingSourceObject: {fileID: 7359203891927180384, guid: f0d19015c6da79a4aae5fb733e8127b6, type: 3}
   m_PrefabInstance: {fileID: 5737009380613828592}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 975a4088dc8213a4aa2a07ad8baa0928, type: 3}
+  m_Script: {fileID: 11500000, guid: b3abb3bc28a9ebd41abae0cf82855750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &6663208699720564943 stripped

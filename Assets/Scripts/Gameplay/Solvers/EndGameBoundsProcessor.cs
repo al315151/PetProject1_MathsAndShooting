@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider))]
-public class EndGameBoundsSolver : MonoBehaviour
+public class EndGameBoundsProcessor : MonoBehaviour
 {
     [SerializeField]
     private BoxCollider boundsCollider;
