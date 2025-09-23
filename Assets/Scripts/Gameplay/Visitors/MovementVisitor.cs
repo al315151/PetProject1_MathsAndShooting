@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using UnityEditor;
 using VContainer.Unity;
 
 public class MovementVisitor : IInitializable, IDisposable
@@ -78,6 +79,11 @@ public class MovementVisitor : IInitializable, IDisposable
                 }
                 registeredEntities[i].UpdatePosition((float)currentTimeSpan / 1000f);
             }
+
+#if UNITY_EDITOR
+            await UniTask.WaitUntil(() => EditorApplication.isPaused == false);
+#endif
+
             cachedTime = DateTime.UtcNow;
             
             await UniTask.WaitForEndOfFrame(cancellationTokenSource.Token);
