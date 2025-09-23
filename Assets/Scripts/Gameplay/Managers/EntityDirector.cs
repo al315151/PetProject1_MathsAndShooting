@@ -115,13 +115,16 @@ public class EntityDirector : IInitializable, IDisposable
             enemy.Reset();
         }
         baseEnemies.Clear();
+        enemyControllerProvider.Dispose();
 
-        foreach( var bullet in baseBulletControllers)
+        foreach ( var bullet in baseBulletControllers)
         {
             bullet.ComponentCleanup();
             bullet.Reset();
         }
         baseBulletControllers.Clear();
+        bulletControllerProvider.Dispose();
+
     }
 
 }

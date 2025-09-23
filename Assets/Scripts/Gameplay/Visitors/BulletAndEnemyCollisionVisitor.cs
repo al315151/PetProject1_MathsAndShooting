@@ -106,10 +106,7 @@ public class BulletAndEnemyCollisionVisitor : IInitializable, IDisposable
                     {
                         Debug.Log($"Collision detected between: {enemyViews[i].gameObject.name} and {bulletViews[j].gameObject.name}");
 
-                        CollisionDetected?.Invoke(enemyViews[i], bulletViews[j]);
-
-                        bulletViews.Remove(bulletViews[j]);
-                        enemyViews.Remove(enemyViews[i]);                       
+                        CollisionDetected?.Invoke(enemyViews[i], bulletViews[j]);                       
                     }
                     break;
                 }
