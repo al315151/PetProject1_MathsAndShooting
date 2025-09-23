@@ -41,6 +41,11 @@ public class GameOverVisitor : IInitializable, IDisposable
         enemies.Add(baseEnemyView);
     }
 
+    public void RemoveVisitor(BaseEnemyView baseEnemyView)
+    {
+        enemies.Remove(baseEnemyView);
+    }
+
     public void ResetVisitors()
     {
         enemies.Clear();

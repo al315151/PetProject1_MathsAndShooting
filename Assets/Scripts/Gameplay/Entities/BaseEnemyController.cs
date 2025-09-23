@@ -7,26 +7,39 @@ public class BaseEnemyController : Entity
 
     private readonly BaseEnemyView baseEnemyView;
     private readonly IGameObjectPool gameObjectPool;
+    private readonly BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor;
+    private readonly MovementVisitor movementVisitor;
+    private readonly GameOverVisitor gameOverVisitor;
 
     public Action<BaseEnemyController> Despawned;
 
     public int EnemyID => enemyID;
 
     private List<Component> components = new();
-
     private int enemyID;
+    private EntityMovement entityMovement;
 
     public BaseEnemyController(
         BaseEnemyView baseEnemyView,
-        IGameObjectPool gameObjectPool)
+        IGameObjectPool gameObjectPool,
+        BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor,
+        MovementVisitor movementVisitor,
+        GameOverVisitor gameOverVisitor)
     {
         this.baseEnemyView = baseEnemyView;
         this.gameObjectPool = gameObjectPool;
+        this.bulletAndEnemyCollisionVisitor = bulletAndEnemyCollisionVisitor;
+        this.movementVisitor = movementVisitor;
+        this.gameOverVisitor = gameOverVisitor;
     }
 
     public override void AddComponentToEntity(Component entity)
     {
         components.Add(entity);
+        if (entity is EntityMovement)
+        {
+            entityMovement = entity as EntityMovement;
+        }
     }
 
     public override void ComponentCleanup()
@@ -38,6 +51,7 @@ public class BaseEnemyController : Entity
                 UnityEngine.Object.Destroy(components[i]);
             }
         }
+        entityMovement = null;
     }
 
     public void Despawn()
@@ -66,6 +80,9 @@ public class BaseEnemyController : Entity
     public override void Reset()
     {
         ResetEnemyID();
+        bulletAndEnemyCollisionVisitor.RemoveEnemyVisit(baseEnemyView);
+        gameOverVisitor.RemoveVisitor(baseEnemyView);
+        movementVisitor.RemoveVisitor(entityMovement);
         gameObjectPool.ReturnObjectToPool(baseEnemyView.gameObject);
     }
 }

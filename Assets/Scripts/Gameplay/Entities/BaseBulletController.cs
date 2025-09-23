@@ -6,6 +6,8 @@ public class BaseBulletController : Entity
 {
     private readonly BaseBulletView baseBulletView;
     private readonly IGameObjectPool gameObjectPool;
+    private readonly BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor;
+    private readonly MovementVisitor movementVisitor;
 
     public int BulletID => bulletID;
 
@@ -19,10 +21,14 @@ public class BaseBulletController : Entity
 
     public BaseBulletController(
         BaseBulletView baseBulletView,
-        IGameObjectPool gameObjectPool)
+        IGameObjectPool gameObjectPool,
+        BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor,
+        MovementVisitor movementVisitor)
     {
         this.baseBulletView = baseBulletView;
         this.gameObjectPool = gameObjectPool;
+        this.bulletAndEnemyCollisionVisitor = bulletAndEnemyCollisionVisitor;
+        this.movementVisitor = movementVisitor;
     }
 
     public override void AddComponentToEntity(Component entity)
@@ -45,6 +51,8 @@ public class BaseBulletController : Entity
     {
         bulletID = -1;
         baseBulletView.ResetBulletID();
+        bulletAndEnemyCollisionVisitor.RemoveBulletVisit(baseBulletView);
+        movementVisitor.RemoveVisitor(entityMovement);
         gameObjectPool.ReturnObjectToPool(baseBulletView.gameObject);
     }
 

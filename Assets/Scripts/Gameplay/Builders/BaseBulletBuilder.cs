@@ -32,7 +32,9 @@ public class BaseBulletBuilder : IEntityBuilder
 
         bulletController = new BaseBulletController(
             newBulletView,
-            gameObjectPool);
+            gameObjectPool,
+            bulletAndEnemyCollisionVisitor,
+            movementVisitor);
 
         BuildEntityView(newBulletView);
         BuildMovementBehaviour(newBulletView);
@@ -42,13 +44,12 @@ public class BaseBulletBuilder : IEntityBuilder
     {
         if(bulletController == null)
         {
-            Debug.Log("Set entity view called for base bullet without gameObject created! Aborting EntityView Creation");
+            Debug.LogError("Set entity view called for base bullet without gameObject created! Aborting EntityView Creation");
             return;
         }
 
         //TODO: add collision detection between enemies and bullets.
         var bulletView = entityView as BaseBulletView;
-
         bulletView.AcceptVisitor(bulletAndEnemyCollisionVisitor);
     }
 

@@ -37,7 +37,10 @@ public class EnemyBuilder : IEntityBuilder
 
         baseEnemy = new BaseEnemyController(
             newObjectEnemyView,
-            gameObjectPool);
+            gameObjectPool,
+            bulletAndEnemyCollisionVisitor,
+            movementVisitor,
+            gameOverVisitor);
 
         BuildEntityView(newObjectEnemyView);
         BuildMovementBehaviour(newObjectEnemyView);

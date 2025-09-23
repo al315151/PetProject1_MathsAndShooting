@@ -20,6 +20,7 @@ public class MovementVisitor : IInitializable, IDisposable
 
     public void Dispose()
     {
+        cancellationTokenSource?.Cancel();
         cancellationTokenSource?.Dispose();
         registeredEntities.Clear();
     }
