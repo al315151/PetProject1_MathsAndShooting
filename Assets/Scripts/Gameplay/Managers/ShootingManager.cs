@@ -4,6 +4,8 @@ using VContainer.Unity;
 
 public class ShootingManager : IInitializable, IDisposable
 {
+    private const float TimeoutBetweenShotsInSeconds = 1.0f;
+
     private readonly InputManager inputManager;
     private readonly EntityDirector entityDirector;
 
@@ -50,5 +52,14 @@ public class ShootingManager : IInitializable, IDisposable
     {
         var newBullet = await entityDirector.SpawnBullet();
         newBullet.EnableEntityMovement();
+
+        ApplyShootingTimeout().Forget();
+    }
+
+    private async UniTask ApplyShootingTimeout()
+    {
+        //Disable shooting until timeout has passed.
+        shootingEnabled = false;
+        await UniTask.WaitForSeconds(TimeoutBetweenShotsInSeconds).ContinueWith(() => shootingEnabled = true);
     }
 }
