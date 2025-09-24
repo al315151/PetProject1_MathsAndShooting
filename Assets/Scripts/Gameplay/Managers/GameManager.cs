@@ -8,23 +8,32 @@ public class GameManager : IInitializable, IDisposable
     private readonly EntityDirector entityDirector;
     private readonly MovementVisitor movementVisitor;
     private readonly GameOverVisitor gameOverVisitor;
-    private readonly GameOverPopup gameOverPopup;
+    private readonly BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor;
     private readonly PlayerController playerController;
+    private readonly GameEndController gameEndController;
+    private readonly GameEndSolver gameEndSolver;
+    private readonly ShootingManager shootingManager;
     private readonly IGameObjectPool gameObjectPool;
 
     public GameManager(
         EntityDirector entityDirector, 
         MovementVisitor movementVisitor,
         GameOverVisitor gameOverVisitor,
-        GameOverPopup gameOverPopup,
+        BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor,
         PlayerController playerController,
+        GameEndController gameEndController,
+        GameEndSolver gameEndSolver,
+        ShootingManager shootingManager,
         IGameObjectPool gameObjectPool)
     {
         this.entityDirector = entityDirector;
         this.movementVisitor = movementVisitor;
         this.gameOverVisitor = gameOverVisitor;
-        this.gameOverPopup = gameOverPopup;
+        this.bulletAndEnemyCollisionVisitor = bulletAndEnemyCollisionVisitor;
         this.playerController = playerController;
+        this.gameEndController = gameEndController;
+        this.gameEndSolver = gameEndSolver;
+        this.shootingManager = shootingManager;
         this.gameObjectPool = gameObjectPool;
     }
 
@@ -48,6 +57,9 @@ public class GameManager : IInitializable, IDisposable
         entityDirector.SpawnEnemies().Forget();
 
         movementVisitor.EnableEntityMovement();
+        bulletAndEnemyCollisionVisitor.EnableCollisionDetection();
+        
+        shootingManager.EnableShooting();
 
         gameOverVisitor.EnableGameOverDetection();
         // Maybe start doing more things here?
@@ -56,14 +68,16 @@ public class GameManager : IInitializable, IDisposable
 
     private void Subscribe()
     {
-        gameOverVisitor.GameOverDetected += OnGameOverDetected;
-        gameOverPopup.RetryButtonPressed += OnRetryButtonPressed;
+        gameOverVisitor.GameLostDetected += OnGameOverDetected;
+        gameEndSolver.GameWonDetected += OnGameOverDetected;
+        gameEndController.RetryButtonPressed += OnRetryButtonPressed;
     }
 
     private void Unsubscribe()
     {
-        gameOverVisitor.GameOverDetected -= OnGameOverDetected;
-        gameOverPopup.RetryButtonPressed -= OnRetryButtonPressed;
+        gameOverVisitor.GameLostDetected -= OnGameOverDetected;
+        gameEndSolver.GameWonDetected -= OnGameOverDetected;
+        gameEndController.RetryButtonPressed -= OnRetryButtonPressed;
     }
 
     private void OnGameOverDetected()
@@ -71,15 +85,14 @@ public class GameManager : IInitializable, IDisposable
         Debug.Log($"[Framecount: {Time.frameCount}] Game Over detected, game stopped!");
         //Disable other systems until user input enables it again.
         playerController.DisablePlayerInput();
+        shootingManager.DisableShooting();
         gameOverVisitor.DisableGameOverDetection();
         movementVisitor.DisableEntityMovement();
-        gameOverPopup.ShowPopup();
+        bulletAndEnemyCollisionVisitor.DisableCollisionDetection();
     }
 
     private void OnRetryButtonPressed()
     {
-        gameOverPopup.HidePopup();
-
         RestartGame().Forget();
     }
 
@@ -89,6 +102,8 @@ public class GameManager : IInitializable, IDisposable
         entityDirector.Cleanup();
         gameOverVisitor.ResetVisitors();
         movementVisitor.ResetVisitors();
+        bulletAndEnemyCollisionVisitor.ResetVisitors();
+        gameEndSolver.ResetSolverState();
 
         //Wait for 1 second to make sure all objects have been destroyed / reset.
         await UniTask.Delay( 1000 );

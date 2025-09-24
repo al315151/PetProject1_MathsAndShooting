@@ -7,4 +7,6 @@ public abstract class Entity
     public abstract void AddComponentToEntity(Component entity);
 
     public abstract void ComponentCleanup();
+
+    public abstract void Reset();
 }

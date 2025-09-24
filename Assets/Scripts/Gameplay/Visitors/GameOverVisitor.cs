@@ -6,16 +6,18 @@ using VContainer.Unity;
 
 public class GameOverVisitor : IInitializable, IDisposable
 {
-    private readonly EndGameBoundsSolver endGameBoundsSolver;
-
-    public Action GameOverDetected;
+    private readonly EndGameBoundsProcessor endGameBoundsSolver;
+    
+    public Action GameLostDetected;
+    public Action RanOutOfEnemiesDetected;
 
     private List<BaseEnemyView> enemies;
 
     private bool IsEndGameOverDetectionEnabled;
     private CancellationTokenSource cancellationTokenSource;
 
-    public GameOverVisitor(EndGameBoundsSolver endGameBoundsSolver)
+    public GameOverVisitor(
+        EndGameBoundsProcessor endGameBoundsSolver)
     {
         this.endGameBoundsSolver = endGameBoundsSolver;
     }
@@ -31,12 +33,17 @@ public class GameOverVisitor : IInitializable, IDisposable
         cancellationTokenSource?.Cancel();
         cancellationTokenSource?.Dispose();
 
-        enemies.Clear();
+        ResetVisitors();
     }
 
     public void AcceptBaseEnemyVisit(BaseEnemyView baseEnemyView)
     {
         enemies.Add(baseEnemyView);
+    }
+
+    public void RemoveVisitor(BaseEnemyView baseEnemyView)
+    {
+        enemies.Remove(baseEnemyView);
     }
 
     public void ResetVisitors()
@@ -71,12 +78,19 @@ public class GameOverVisitor : IInitializable, IDisposable
                 var (worldSpaceCenter,bounds) = enemies[i].GetEnemyWorldSpaceCenterAndBounds();
                 if (bounds != null && endGameBoundsSolver.IsTargetBoundsInside(worldSpaceCenter, bounds))
                 {
-                    GameOverDetected?.Invoke();
+                    GameLostDetected?.Invoke();
                     break;
                 }
             }
+
+            if (enemies.Count == 0)
+            {
+                RanOutOfEnemiesDetected?.Invoke();
+            }
+
             await UniTask.WaitForEndOfFrame(cancellationTokenSource.Token);
+
+            
         }
     }
-   
 }
