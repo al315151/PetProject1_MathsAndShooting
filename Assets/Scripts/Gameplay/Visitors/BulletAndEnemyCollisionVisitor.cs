@@ -11,7 +11,8 @@ public class BulletAndEnemyCollisionVisitor : IInitializable, IDisposable
     private List<BaseEnemyView> enemyViews;
     private List<BaseBulletView> bulletViews;
 
-    public Action<BaseEnemyView, BaseBulletView> CollisionDetected;
+    public Action<BaseEnemyView> CollisionDetectedForEnemy;
+    public Action<BaseBulletView> CollisionDetectedForBullet;
 
     private bool isCollisionDetectionEnabled;
     private CancellationTokenSource cancellationTokenSource;
@@ -107,18 +108,17 @@ public class BulletAndEnemyCollisionVisitor : IInitializable, IDisposable
                         bulletBounds))
                     {
                         Debug.Log($"Collision detected between: {enemyViews[i].gameObject.name} and {bulletViews[j].gameObject.name}");
-
-                        CollisionDetected?.Invoke(enemyViews[i], bulletViews[j]);
+                        CollisionDetectedForBullet?.Invoke(bulletViews[j]);
+                        CollisionDetectedForEnemy?.Invoke(enemyViews[i]);
+                        collisionDetected = true;
                         break;
-                    }
-                    
+                    }                    
                 }
 
                 if (collisionDetected)
                 {
                     break;
                 }
-
             }
 
             await UniTask.WaitForEndOfFrame(cancellationTokenSource.Token);
