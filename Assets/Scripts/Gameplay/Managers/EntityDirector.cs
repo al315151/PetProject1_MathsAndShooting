@@ -52,9 +52,7 @@ public class EntityDirector : IInitializable, IDisposable
             var baseEnemy = await CreateBasicEnemy();
             baseEnemies.Add(baseEnemy);
 
-            baseEnemy.SetupEnemyID(baseEnemy.GetHashCode());
             enemyControllerProvider.AddEnemyController(baseEnemy);
-
             baseEnemy.Despawned += OnEnemyDespawned;
 
             await UniTask.Delay(1000);
@@ -67,13 +65,9 @@ public class EntityDirector : IInitializable, IDisposable
     {
         var newBullet = await CreateBasicBullet();
         baseBulletControllers.Add(newBullet);
-        
-        newBullet.SetBulletID(newBullet.GetHashCode());
+
         bulletControllerProvider.AddBulletController(newBullet);
-
-        newBullet.Despawned += OnBulletDespawned;
-
-        newBullet.SetBulletStartPosition(playerController.GetBulletSpawnPosition());
+        newBullet.Despawned += OnBulletDespawned;        
         return newBullet;
     }
 

@@ -4,19 +4,21 @@ using VContainer.Unity;
 
 public class ShootingManager : IInitializable, IDisposable
 {
-    private const float TimeoutBetweenShotsInSeconds = 1.0f;
+    private const float TimeoutBetweenShotsInSeconds = 0.5f;
 
     private readonly InputManager inputManager;
     private readonly EntityDirector entityDirector;
-
+    private readonly PlayerController playerController;
     private bool shootingEnabled;
 
     public ShootingManager(
         InputManager inputManager,
-        EntityDirector entityDirector)
+        EntityDirector entityDirector,
+        PlayerController playerController)
     {
         this.inputManager = inputManager;
         this.entityDirector = entityDirector;
+        this.playerController = playerController;
     }
 
     public void Initialize()
@@ -51,6 +53,7 @@ public class ShootingManager : IInitializable, IDisposable
     private async UniTask SpawnAndShootBullet()
     {
         var newBullet = await entityDirector.SpawnBullet();
+        newBullet.SetBulletStartPosition(playerController.GetBulletSpawnPosition());
         newBullet.EnableEntityMovement();
 
         ApplyShootingTimeout().Forget();

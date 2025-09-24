@@ -31,6 +31,8 @@ public class BaseEnemyController : Entity
         this.bulletAndEnemyCollisionVisitor = bulletAndEnemyCollisionVisitor;
         this.movementVisitor = movementVisitor;
         this.gameOverVisitor = gameOverVisitor;
+
+        SetupEnemyID(GetHashCode());
     }
 
     public override void AddComponentToEntity(Component entity)

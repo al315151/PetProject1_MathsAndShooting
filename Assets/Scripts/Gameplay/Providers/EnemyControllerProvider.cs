@@ -4,7 +4,7 @@ using VContainer.Unity;
 
 public class EnemyControllerProvider : IInitializable, IDisposable
 {
-    private List<BaseEnemyController> baseEnemies;
+    private Dictionary<int, BaseEnemyController> baseEnemies;
 
     public void Dispose()
     {
@@ -13,17 +13,17 @@ public class EnemyControllerProvider : IInitializable, IDisposable
 
     public void Initialize()
     {
-        baseEnemies = new List<BaseEnemyController>();
+        baseEnemies = new Dictionary<int, BaseEnemyController>();
     }
 
     public void AddEnemyController(BaseEnemyController enemy)
     {
-        baseEnemies.Add(enemy);
+        baseEnemies.Add(enemy.EnemyID, enemy);
     }
 
     public void RemoveEnemyController(BaseEnemyController enemy)
     {
-        baseEnemies.Remove(enemy);
+        baseEnemies.Remove(enemy.EnemyID);
     }
 
     public void Reset()
@@ -33,13 +33,6 @@ public class EnemyControllerProvider : IInitializable, IDisposable
 
     public BaseEnemyController GetEnemyController(BaseEnemyView enemyView)
     {
-        for (int i = 0; i < baseEnemies.Count; i++)
-        {
-            if (baseEnemies[i].EnemyID == enemyView.EnemyID)
-            {
-                return baseEnemies[i];
-            }
-        }
-        return null;
+        return baseEnemies[enemyView.EnemyID];
     }
 }

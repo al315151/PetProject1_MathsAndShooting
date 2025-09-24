@@ -57,8 +57,7 @@ public class GameManager : IInitializable, IDisposable
         entityDirector.SpawnEnemies().Forget();
 
         movementVisitor.EnableEntityMovement();
-        bulletAndEnemyCollisionVisitor.EnableCollisionDetection();
-        
+        bulletAndEnemyCollisionVisitor.EnableCollisionDetection();        
         shootingManager.EnableShooting();
 
         gameOverVisitor.EnableGameOverDetection();
@@ -109,7 +108,5 @@ public class GameManager : IInitializable, IDisposable
         await UniTask.Delay( 1000 );
 
         StartGameAsync().Forget();
-
-
     }
 }
