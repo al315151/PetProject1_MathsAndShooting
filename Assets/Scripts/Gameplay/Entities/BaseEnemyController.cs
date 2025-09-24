@@ -92,7 +92,7 @@ public class BaseEnemyController : Entity
 
     public void DepleteHealth()
     {
-        HealthPoints--;
+        HealthPoints = HealthPoints - 1;
         UpdateHealthOnView();
         if (HealthPoints <= 0)
         {

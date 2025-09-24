@@ -28,7 +28,6 @@ public class BaseEnemyView : EntityView
     private int maxSizeHitPoints;
 
     private bool graphicsScaleUpdated;
-    private bool physicsScaleUpdated;
 
     private void OnEnable()
     {
@@ -41,23 +40,12 @@ public class BaseEnemyView : EntityView
         cachedPosition = transform.position;
     }
 
-    private void FixedUpdate()
-    {
-        if (physicsScaleUpdated)
-        {
-            enemyBounds = enemyGraphicsBoundsCollider.bounds;
-            physicsScaleUpdated = false;
-            Debug.Log($"[Framecount: {Time.frameCount}] Changed bounds of object: {gameObject.name} to: {enemyBounds.size}");
-        }
-    }
-
     private void LateUpdate()
     {
         if (graphicsScaleUpdated)
         {
-            m_EnemyGraphicsPrefab.transform.localScale = Vector3.one * targetLocalScale;
+            m_EnemyGraphicsPrefab.transform.localScale = new Vector3(1.0f,targetLocalScale, 1.0f);
             graphicsScaleUpdated = false;
-            Debug.Log($"[Framecount: {Time.frameCount}] Changed scale of object: {gameObject.name} to: {targetLocalScale}");
         }        
     }
 
@@ -79,7 +67,6 @@ public class BaseEnemyView : EntityView
 
     public void SetupHitPointsGraphics(int hitPoints)
     {
-        Debug.Log($"[Framecount: {Time.frameCount}] object: {gameObject.name} hit points changed to: {hitPoints}");
         var expectedSize = Mathf.Clamp(hitPoints, minSizeHitPoints, maxSizeHitPoints);
         var normalizedExpectedSize = expectedSize / maxSizeHitPoints;
 
@@ -88,7 +75,6 @@ public class BaseEnemyView : EntityView
 
         targetLocalScale = graphicsSize;
         graphicsScaleUpdated = true;
-        physicsScaleUpdated = true;
     }
 
     public void ResetView()
@@ -111,4 +97,5 @@ public class BaseEnemyView : EntityView
     {
         visitor.AcceptEnemyVisit(this);
     }
+
 }
