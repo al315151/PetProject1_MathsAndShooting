@@ -4,7 +4,7 @@ using VContainer.Unity;
 
 public class BulletControllerProvider : IInitializable, IDisposable
 {
-    private List<BaseBulletController> baseBullets;
+    private Dictionary<int, BaseBulletController> baseBullets;
 
     public void Dispose()
     {
@@ -13,17 +13,17 @@ public class BulletControllerProvider : IInitializable, IDisposable
 
     public void Initialize()
     {
-        baseBullets = new List<BaseBulletController>();
+        baseBullets = new Dictionary<int, BaseBulletController>();
     }
 
     public void AddBulletController(BaseBulletController bullet)
     {
-        baseBullets.Add(bullet);
+        baseBullets.Add(bullet.BulletID, bullet);
     }
 
     public void RemoveBulletController(BaseBulletController bullet)
     {
-        baseBullets.Remove(bullet);
+        baseBullets.Remove(bullet.BulletID);
     }
 
     public void Reset()
@@ -33,14 +33,7 @@ public class BulletControllerProvider : IInitializable, IDisposable
 
     public BaseBulletController GetBulletController(BaseBulletView bulletView)
     {
-        for (int i = 0; i < baseBullets.Count; i++)
-        {
-            if (baseBullets[i].BulletID == bulletView.BulletID)
-            {
-                return baseBullets[i];
-            }
-        }
-        return null;
+        return baseBullets[bulletView.BulletID];
     }
 
 }

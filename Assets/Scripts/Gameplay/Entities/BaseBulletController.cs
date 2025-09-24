@@ -29,6 +29,8 @@ public class BaseBulletController : Entity
         this.gameObjectPool = gameObjectPool;
         this.bulletAndEnemyCollisionVisitor = bulletAndEnemyCollisionVisitor;
         this.movementVisitor = movementVisitor;
+
+        SetBulletID(GetHashCode());
     }
 
     public override void AddComponentToEntity(Component entity)
