@@ -7,12 +7,10 @@ public class EndGameBoundsProcessor : MonoBehaviour
     private BoxCollider boundsCollider;
 
     private Bounds bounds;
-    private Vector3 cachedPosition;
 
     private void OnEnable()
     {
         bounds = boundsCollider.bounds;
-        cachedPosition = transform.position;
     }
 
     public bool IsTargetBoundsInside(Vector3 worldSpaceCenter, Bounds objectBounds)
