@@ -309,7 +309,15 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      GroundStripes_0: 1844065229908993774
+      GroundStripes_1: 3266551545015315157
+      GroundStripes_2: -8156738282589152435
+      GroundStripes_3: -5595883329843081270
+      GroundStripes_4: 5723605353604722654
+      GroundStripes_5: -5193396741738094690
+      GroundStripes_6: -6814225362312349752
+      GroundStripes_7: 2043714325114558424
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
