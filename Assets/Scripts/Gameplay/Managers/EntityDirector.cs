@@ -115,7 +115,7 @@ public class EntityDirector : IInitializable, IDisposable
             enemy.Reset();
         }
         baseEnemies.Clear();
-        enemyControllerProvider.Dispose();
+        enemyControllerProvider.Reset();
 
         foreach ( var bullet in baseBulletControllers)
         {
@@ -123,7 +123,7 @@ public class EntityDirector : IInitializable, IDisposable
             bullet.Reset();
         }
         baseBulletControllers.Clear();
-        bulletControllerProvider.Dispose();
+        bulletControllerProvider.Reset();
 
     }
 

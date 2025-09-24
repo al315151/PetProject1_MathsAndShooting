@@ -79,14 +79,15 @@ public class BulletAndEnemyCollisionVisitor : IInitializable, IDisposable
     {
         while (isCollisionDetectionEnabled)
         {
-            var collisionDetected = false;
-            for(int i = 0; i < enemyViews.Count; i++)
-            {
 
+            var collisionDetected = false;
+
+            for (int i = 0; i < enemyViews.Count; i++)
+            {
                 var (enemyWorldSpaceCenter, enemyBounds) = enemyViews[i].GetEnemyWorldSpaceCenterAndBounds();
                 if (enemyBounds == null)
                 {
-                    Debug.Log($"[Framecount: {Time.frameCount}] Enemy not found!at index: {i}");
+                    Debug.LogError($"[Framecount: {Time.frameCount}] Enemy not found!at index: {i}");
                     continue;
                 }
 
@@ -95,9 +96,10 @@ public class BulletAndEnemyCollisionVisitor : IInitializable, IDisposable
                     var (bulletWorldSpaceCenter, bulletBounds) = bulletViews[j].GetBulletWorldSpaceCenterAndBounds();
                     if (bulletBounds == null)
                     {
-                        Debug.Log($"[Framecount: {Time.frameCount}] Bullet not found! at index: {j}");
+                        Debug.LogError($"[Framecount: {Time.frameCount}] Bullet not found! at index: {j}");
                         continue;
                     }
+
                     if (CollisionBetweenTwoObjectsSolver.AreTwoObjectsColliding(
                         enemyWorldSpaceCenter,
                         enemyBounds,
@@ -106,9 +108,10 @@ public class BulletAndEnemyCollisionVisitor : IInitializable, IDisposable
                     {
                         Debug.Log($"Collision detected between: {enemyViews[i].gameObject.name} and {bulletViews[j].gameObject.name}");
 
-                        CollisionDetected?.Invoke(enemyViews[i], bulletViews[j]);                       
+                        CollisionDetected?.Invoke(enemyViews[i], bulletViews[j]);
+                        break;
                     }
-                    break;
+                    
                 }
 
                 if (collisionDetected)

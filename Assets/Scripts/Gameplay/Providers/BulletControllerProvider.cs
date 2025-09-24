@@ -26,6 +26,11 @@ public class BulletControllerProvider : IInitializable, IDisposable
         baseBullets.Remove(bullet);
     }
 
+    public void Reset()
+    {
+        baseBullets.Clear();
+    }
+
     public BaseBulletController GetBulletController(BaseBulletView bulletView)
     {
         for (int i = 0; i < baseBullets.Count; i++)

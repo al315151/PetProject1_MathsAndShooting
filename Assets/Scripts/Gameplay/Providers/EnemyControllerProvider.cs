@@ -26,6 +26,11 @@ public class EnemyControllerProvider : IInitializable, IDisposable
         baseEnemies.Remove(enemy);
     }
 
+    public void Reset()
+    {
+        baseEnemies.Clear();
+    }
+
     public BaseEnemyController GetEnemyController(BaseEnemyView enemyView)
     {
         for (int i = 0; i < baseEnemies.Count; i++)
