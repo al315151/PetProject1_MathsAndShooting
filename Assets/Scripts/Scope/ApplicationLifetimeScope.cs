@@ -54,6 +54,7 @@ public class ApplicationLifetimeScope : LifetimeScope
         builder.Register<BulletControllerProvider>(Lifetime.Scoped).As<IInitializable, IDisposable, BulletControllerProvider>();
 
         builder.Register<ShootingManager>(Lifetime.Scoped).As<IInitializable, IDisposable, ShootingManager>();
+        builder.Register<EnemyHealthManager>(Lifetime.Scoped).As<IInitializable, IDisposable, EnemyHealthManager>();
         builder.Register<GameManager>(Lifetime.Scoped).As<IInitializable, IDisposable>();
         
     }

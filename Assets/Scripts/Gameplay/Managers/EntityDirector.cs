@@ -43,11 +43,11 @@ public class EntityDirector : IInitializable, IDisposable
         baseBulletControllers = new List<BaseBulletController>();
     }
 
-    public async UniTask SpawnEnemies()
+    public async UniTask SpawnEnemies(int numberOfEnemies)
     {
         baseEnemies = new List<BaseEnemyController>();
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < numberOfEnemies; i++)
         {
             var baseEnemy = await CreateBasicEnemy();
             baseEnemies.Add(baseEnemy);

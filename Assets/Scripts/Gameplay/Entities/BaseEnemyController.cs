@@ -18,9 +18,11 @@ public class BaseEnemyController : Entity
     private List<Component> components = new();
     private int enemyID;
     private EntityMovement entityMovement;
+    private int HealthPoints;
 
     public BaseEnemyController(
         BaseEnemyView baseEnemyView,
+        EnemyConfig enemyConfig,
         IGameObjectPool gameObjectPool,
         BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor,
         MovementVisitor movementVisitor,
@@ -33,6 +35,15 @@ public class BaseEnemyController : Entity
         this.gameOverVisitor = gameOverVisitor;
 
         SetupEnemyID(GetHashCode());
+        baseEnemyView.SetupInitialHitPointThreshold
+            (enemyConfig.MinInitialHitPoints, 
+            enemyConfig.MaxInitialHitPoints);
+
+        // Setup initial life
+        HealthPoints = UnityEngine.Random.Range(
+            enemyConfig.MinInitialHitPoints, 
+            enemyConfig.MaxInitialHitPoints + 1);
+        UpdateHealthOnView();
     }
 
     public override void AddComponentToEntity(Component entity)
@@ -62,6 +73,11 @@ public class BaseEnemyController : Entity
         Despawned?.Invoke(this);
     }
 
+    public void UpdateHealthOnView()
+    {
+        baseEnemyView.SetupHitPointsGraphics(HealthPoints);
+    }
+
     public void SetupEnemyID(int enemyID)
     {
         this.enemyID = enemyID;
@@ -74,6 +90,16 @@ public class BaseEnemyController : Entity
         baseEnemyView.ResetEnemyID();
     }
 
+    public void DepleteHealth()
+    {
+        HealthPoints = HealthPoints - 1;
+        UpdateHealthOnView();
+        if (HealthPoints <= 0)
+        {
+            Despawn();
+        }
+    }
+
     public void SetupEnemyPosition(Vector3 position)
     {
         baseEnemyView.SetViewPosition(position);
@@ -82,6 +108,7 @@ public class BaseEnemyController : Entity
     public override void Reset()
     {
         ResetEnemyID();
+        baseEnemyView.ResetView();
         bulletAndEnemyCollisionVisitor.RemoveEnemyVisit(baseEnemyView);
         gameOverVisitor.RemoveVisitor(baseEnemyView);
         movementVisitor.RemoveVisitor(entityMovement);

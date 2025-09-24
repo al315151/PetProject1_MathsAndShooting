@@ -6,29 +6,26 @@ public class EntityDespawner : IInitializable, IDisposable
 {
     private readonly BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor;
     private readonly BulletControllerProvider bulletControllerProvider;
-    private readonly EnemyControllerProvider enemyControllerProvider;
 
     public EntityDespawner(
         BulletAndEnemyCollisionVisitor bulletAndEnemyCollisionVisitor,
-        BulletControllerProvider bulletControllerProvider,
-        EnemyControllerProvider enemyControllerProvider)
+        BulletControllerProvider bulletControllerProvider)
     {
         this.bulletAndEnemyCollisionVisitor = bulletAndEnemyCollisionVisitor;
         this.bulletControllerProvider = bulletControllerProvider;
-        this.enemyControllerProvider = enemyControllerProvider;
     }
 
     public void Initialize()
     {
-        bulletAndEnemyCollisionVisitor.CollisionDetected += OnCollisionDetected;
+        bulletAndEnemyCollisionVisitor.CollisionDetectedForBullet += OnCollisionDetected;
     }
 
     public void Dispose()
     {
-        bulletAndEnemyCollisionVisitor.CollisionDetected -= OnCollisionDetected;
+        bulletAndEnemyCollisionVisitor.CollisionDetectedForBullet -= OnCollisionDetected;
     }
 
-    private void OnCollisionDetected(BaseEnemyView enemyView, BaseBulletView bulletView)
+    private void OnCollisionDetected(BaseBulletView bulletView)
     {
         var bulletController = bulletControllerProvider.GetBulletController(bulletView);
         if (bulletController == null)
@@ -36,13 +33,5 @@ public class EntityDespawner : IInitializable, IDisposable
             Debug.LogError($"[Framecount: {Time.frameCount}] Bullet controller not found! bullet view name: {bulletView.gameObject.name}");
         }
         bulletController?.Despawn();
-
-        var enemyController = enemyControllerProvider.GetEnemyController(enemyView);
-        if (enemyController == null)
-        {
-            Debug.LogError($"[Framecount: {Time.frameCount}] enemy controller not found! eenemy view name: {enemyView.gameObject.name}");
-        }
-        enemyController?.Despawn();
-
     }
 }

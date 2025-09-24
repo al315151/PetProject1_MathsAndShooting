@@ -5,6 +5,8 @@ using VContainer.Unity;
 
 public class GameManager : IInitializable, IDisposable
 {
+    private const int NumberOfEnemiesToSpawn = 10;
+
     private readonly EntityDirector entityDirector;
     private readonly MovementVisitor movementVisitor;
     private readonly GameOverVisitor gameOverVisitor;
@@ -54,7 +56,7 @@ public class GameManager : IInitializable, IDisposable
 
         await UniTask.WaitUntil(() => gameObjectPool.IsInitialized);
 
-        entityDirector.SpawnEnemies().Forget();
+        entityDirector.SpawnEnemies(NumberOfEnemiesToSpawn).Forget();
 
         movementVisitor.EnableEntityMovement();
         bulletAndEnemyCollisionVisitor.EnableCollisionDetection();        
